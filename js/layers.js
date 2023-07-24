@@ -25,6 +25,7 @@ addLayer("cr",{
     tabFormat: ["main-display",
     "blank",
     "blank",
+    "upgrades"
     ["display-text",
         function() {return 'e'},
             {}],
