@@ -29,10 +29,10 @@ addLayer("cr",{
         function() {return 'e'},
             {}],
     "blank",
+    "upgrades",
     ["display-text",
-    function() {return 'e'},
-    "blank", "upgrades", "blank",
-    {}]],
+    function() {return 'e'},]
+    ],
     
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
