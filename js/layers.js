@@ -12,7 +12,7 @@ addLayer("cr",{
     requires(){
             return new Decimal(0)
         },
-    resource: "discoveries",
+    resource: "creator points",
     baseResource: "atoms",
     baseAmount() {return player.points},
     type: "static",
@@ -27,14 +27,21 @@ addLayer("cr",{
     },
     row: 0,
     hotkeys: [
-        {key: "c", description: "c: Reset for discoveries", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "c", description: "c: Reset for creator points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
+    passiveGeneration(){
+        let status = false
+        if (hasUpgrade("cr", "11")) status = true
+        return status
+    },
     upgrades: {
         11: {
-            title: "Placeholder",
-            description: "sus",
-            cost: new Decimal(10000)
+            title: "Start",
+            description: "Generate 1 creator point per second",
+            cost: new Decimal(1)
+        },
+        12: {
 
         }
     },
