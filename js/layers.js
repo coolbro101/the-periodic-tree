@@ -98,7 +98,7 @@ addLayer("cr",{
     position: 0,
     startData() {return{
         unlocked: true,
-        points: new Decimal(0),
+        points: new Decimal(10),
         total:new Decimal(0),
         best: new Decimal(0),
     }},
@@ -106,7 +106,7 @@ addLayer("cr",{
     requires(){
             return new Decimal(0)
         },
-    resource: "creator points",
+    resource: "creation points",
     baseResource: "atoms",
     baseAmount() {return player.points},
     type: "static",
@@ -157,7 +157,7 @@ addLayer("cr",{
         11: {
             title: "A Start",
             description: "Generate 1 creator point per second",
-            cost: new Decimal(0),
+            cost: new Decimal(10),
         },
     },
 
