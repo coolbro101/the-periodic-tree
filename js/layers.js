@@ -31,7 +31,7 @@ addLayer("cr",{
     "blank",
     ["display-text",
     function() {return 'e'},
-    "blank", "upgrades", "blank"
+    "blank", "upgrades", "blank",
     {}]],
     
     gainExp() { // Calculate the exponent on main currency from bonuses
