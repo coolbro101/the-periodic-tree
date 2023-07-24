@@ -50,11 +50,8 @@ addLayer("cr",{
         11: {
             title: "Start",
             description: "Generate 1 creator point per second",
-            cost: new Decimal(1)
+            cost: new Decimal(0)
         },
-        12: {
-
-        }
     },
 })
 
