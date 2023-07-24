@@ -22,6 +22,17 @@ addLayer("cr",{
 	
         return mult
     },
+    tabFormat: ["main-display",
+    "blank",
+    "blank",
+    ["display-text",
+        function() {return 'e'},
+            {}],
+    "blank",
+    ["display-text",
+    function() {return 'e'},
+    {}]],
+    
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
     },
