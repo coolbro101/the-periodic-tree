@@ -25,7 +25,7 @@ addLayer("cr",{
     tabFormat: ["main-display",
     "blank",
     ["display-test",
-    function() {return 'You gain ' + tmp.cr.effect + ' creator points every second'},],
+    function() {return 'You gain 1 creation point a second'},],
     "blank",
     "upgrades",
     ["display-text",
