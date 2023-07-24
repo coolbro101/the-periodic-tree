@@ -99,8 +99,8 @@ addLayer("cr",{
     startData() {return{
         unlocked: true,
         points: new Decimal(10),
-        total:new Decimal(0),
-        best: new Decimal(0),
+        total:new Decimal(10),
+        best: new Decimal(10),
     }},
     color: "yellow",
     requires(){
