@@ -25,13 +25,13 @@ addLayer("cr",{
     tabFormat: ["main-display",
     "blank",
     "blank",
-    "upgrades"
     ["display-text",
         function() {return 'e'},
             {}],
     "blank",
     ["display-text",
     function() {return 'e'},
+    "blank", "upgrades", "blank"
     {}]],
     
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -42,11 +42,7 @@ addLayer("cr",{
         {key: "c", description: "c: Reset for creator points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
-    passiveGeneration(){
-        let status = false
-        if (hasUpgrade("cr", "11")) status = true
-        return status
-    },
+
     upgrades: {
         11: {
             title: "Start",
