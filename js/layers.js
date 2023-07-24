@@ -24,16 +24,19 @@ addLayer("cr",{
     },
     tabFormat: ["main-display",
     "blank",
-    "blank",
-    ["display-text",
-        function() {return 'e'},
-            {}],
+    ["display-test",
+    function() {return 'You gain ' + tmp.cr.effect + ' creator points every second'},],
     "blank",
     "upgrades",
     ["display-text",
     function() {return 'e'},]
     ],
-    
+    update(diff) {
+        if (hasUpgrade("cr", "11")) player.cr.points = player.cr.points.add(tmp.cr.effect.times(diff));
+    },
+    effect(){
+        return new Decimal(1)
+    },
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
     },
