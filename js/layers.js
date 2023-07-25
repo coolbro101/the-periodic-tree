@@ -167,7 +167,7 @@ addLayer("cr",{
 		cost: new Decimal(20)
 	},
 	13: {
-		title: "This Game Is Meant To Be Slow",
+		title: "This Is Meant To Be Slow",
 		description: "You might grow a year older while waiting for this upgrade! Creation points boost their own gain.",
 		cost: new Decimal(100)
 	},
