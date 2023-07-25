@@ -19,8 +19,8 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.0</h3><br>
-		- no u.<br>
-		- ur mom.`
+		- Added things.<br>
+		- Added stuff.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -42,8 +42,15 @@ function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
-	let gain = new Decimal(0.1)
-	if(hasUpgrade("cr", 12)) gain = gain.times(4)
+		let gain = new Decimal(0)
+		//Hydrogen Upgrades
+		if(hasUpgrade('h', 11)) gain = new Decimal(1)
+		if(hasUpgrade('h', 12)) gain = gain.times(2)
+		if(hasUpgrade('h', 13)) gain = gain.times(upgradeEffect('h',13))
+		if(hasUpgrade('h', 21)) gain = gain.times(upgradeEffect('h',21))
+		if(hasUpgrade('h', 22)) gain = gain.times(3)
+		if(hasUpgrade('h', 23)) gain = gain.times(upgradeEffect('h',23))
+		
 	return gain
 }
 
