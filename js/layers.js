@@ -106,7 +106,7 @@ addLayer("cr",{
     requires(){
             return new Decimal(0)
         },
-    resource: "creation points",
+    resource: "creator points",
     baseResource: "atoms",
     baseAmount() {return player.points},
     type: "static",
@@ -126,13 +126,12 @@ addLayer("cr",{
 
     update(diff) {
         if (hasUpgrade("cr", "11")) player.cr.points = player.cr.points.add(tmp.cr.effect.times(diff));
-	if (hasUpgrade("cr", "13")) player.cr.points = player.cr.points.add(tmp.cr.effect.times(diff));
     },
     effect(){
         let effect = new Decimal(0)
-        if(hasUpgrade("cr", "11")) effect = new Decimal(0.1)
-	    //NOTE: if you have a better formula for this put it here. Also, the thing that says generating x points/s is completely broken - it gains much faster than what it says. try to fix pls another note on line 165
-	if(hasUpgrade("cr", "13")) effect = effect.times(((player.points).times(1e-2)).add(1))
+        if(hasUpgrade("cr", "11")) effect = new Decimal(0.5)
+        if(hasUpgrade("cr", "12")) effect = new Decimal(1)
+        if(hasUpgrade("cr", "13")) effect = new Decimal(5)
         return effect
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -146,80 +145,56 @@ addLayer("cr",{
 
     bars: {
         progBar: {
-            display(){
-                '<p style="color:white;">Hi</p>'
-            },
+
             direction: RIGHT,
-            width: 200,
-            height: 50,
-            progress() { return player.cr.points },
+
+            width: 400,
+            height: 100,
+            fillStyle: {'background-color' : "#FFFFFF"},
+            baseStyle: {'background-color' : "#696969"},
+            textStyle: {'color': '#04e050'},
+            progress() {
+                let progress = player.cr.points.div(50)
+                if(progress.gte(1) && tmp.cr.bars.progBar.divider.eq(1500)) progress = player.cr.points.div(10000)
+                return progress
+            },
+            divider(){
+                let value = new Decimal(1500)
+                if (tmp.cr.bars.progBar.progress.neq(player.cr.points.div(1500))) value = new Decimal(10000)
+                return value
+            },
+            display() {
+                let display = format(player.cr.points) + ' / ' + tmp.cr.bars.progBar.divider + '<br><p>Unlocks 1 More Upgrade<p>'
+                return display
+            },
         },
     }, 
     
     upgrades: {
         11: {
             title: "A Start",
-            description: "Generate 0.1 creator points per second",
+            description: "Generate 0.5 creator points per second",
             cost: new Decimal(0),
         },
-	    //NOTE: bent implement this for some reason it no workie i tried in mod.js but it doesnt do anything rn fsr
-	    //upgrade 12 btw
-	12: {
-		title: "Get Timewalled",
-		description: "This will take a while. Start generating atoms at a steady flow of 0.4/s",
-		cost: new Decimal(20)
-	},
-	13: {
-		title: "This Is Meant To Be Slow",
-		description: "You might grow a year older while waiting for this upgrade! Atoms boost creator point gain.",
-		cost: new Decimal(100)
-	},
-	
-    },
-
-})
-addLayer("d",{
-    name: "discoveries",
-    symbol: "D",
-    position: 0,
-    startData() {return{
-        unlocked: false,
-        points: new Decimal(0),
-        total:new Decimal(0),
-        best: new Decimal(0),
-    }},
-	 branches: ["cr"],
-    color: "orange",
-    requires(){
-            return new Decimal(1.38e10)
+        12: {
+            title: "Get Timewalled",
+            description: "This will take a while. Increase CR generation to 1 per second.",
+            cost: new Decimal(50)
         },
-    resource: "discoveries",
-    baseResource: "atoms",
-    baseAmount() {return player.points},
-    type: "static",
-    exponent: 1,
-    gainMult() { // Calculate the multiplier for main currency from bonuses
-        mult = new Decimal(1)
-	
-        return mult
-    },
-
-  
-    gainExp() { // Calculate the exponent on main currency from bonuses
-        return new Decimal(1)
-    },
-    row: 1,
-    hotkeys: [
-        {key: "d", description: "d: Reset for discoveries", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
-    ],
-    layerShown(){return player.cr.unlocked},
-
-    
-    upgrades: {
-        11: {
-            title: "A Start",
-            description: "Generate 0.1 creator points per second",
-            cost: new Decimal(0),
+        13: {
+            title: "This Is Meant To Be Slow",
+            description: "You might grow a year older while waiting for this upgrade! Increase CR generation to 5 a second.",
+            cost: new Decimal(200)
+        },
+        14: {
+            title: "Beginnings",
+            description: "Unlocks a new layer",
+            cost: new Decimal(1500),
+            unlocked(){
+                let status = false
+                if(tmp.cr.bars.progBar.progress.gte(1) || hasUpgrade("cr", "12") || tmp.cr.bars.progBar.progress.neq(player.cr.points.div(1500))) status = true
+                return status
+            }
         },
     },
 
