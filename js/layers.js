@@ -98,9 +98,9 @@ addLayer("cr",{
     position: 0,
     startData() {return{
         unlocked: true,
-        points: new Decimal(10),
-        total:new Decimal(10),
-        best: new Decimal(10),
+        points: new Decimal(0),
+        total:new Decimal(0),
+        best: new Decimal(0),
     }},
     color: "yellow",
     requires(){
@@ -157,7 +157,7 @@ addLayer("cr",{
         11: {
             title: "A Start",
             description: "Generate 1 creator point per second",
-            cost: new Decimal(10),
+            cost: new Decimal(0),
         },
     },
 
