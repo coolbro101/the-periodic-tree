@@ -129,7 +129,7 @@ addLayer("cr",{
     },
     effect(){
         let effect = new Decimal(0)
-        if(hasUpgrade("cr", "11")) effect = new Decimal(1)
+        if(hasUpgrade("cr", "11")) effect = new Decimal(0.1)
         return effect
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -156,7 +156,52 @@ addLayer("cr",{
     upgrades: {
         11: {
             title: "A Start",
-            description: "Generate 1 creator point per second",
+            description: "Generate 0.1 creator points per second",
+            cost: new Decimal(0),
+        },
+    },
+
+})
+addLayer("d",{
+    name: "discoveries",
+    symbol: "D",
+    position: 0,
+    startData() {return{
+        unlocked: true,
+        points: new Decimal(0),
+        total:new Decimal(0),
+        best: new Decimal(0),
+    }},
+    color: "yellow",
+    requires(){
+            return new Decimal(1.38e10)
+        },
+    resource: "discoveries",
+    baseResource: "atoms",
+    baseAmount() {return player.points},
+    type: "static",
+    exponent: 1,
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+	
+        return mult
+    },
+
+  
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 1,
+    hotkeys: [
+        {key: "d", description: "d: Reset for discoveries", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return true},
+
+    
+    upgrades: {
+        11: {
+            title: "A Start",
+            description: "Generate 0.1 creator points per second",
             cost: new Decimal(0),
         },
     },
