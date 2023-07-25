@@ -103,9 +103,6 @@ addLayer("cr",{
         best: new Decimal(0),
     }},
     color: "yellow",
-    requires(){
-            return new Decimal(0)
-        },
     resource: "creator points",
     baseResource: "atoms",
     baseAmount() {return player.points},
@@ -129,7 +126,7 @@ addLayer("cr",{
     },
     effect(){
         let effect = new Decimal(0)
-        if(hasUpgrade("cr", "11")) effect = new Decimal(0.5)
+        if(hasUpgrade("cr", "11")) effect = new Decimal(12312312)
         if(hasUpgrade("cr", "12")) effect = new Decimal(1)
         if(hasUpgrade("cr", "13")) effect = new Decimal(5)
         return effect
@@ -142,7 +139,11 @@ addLayer("cr",{
         {key: "c", description: "c: Reset for creator points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
-
+    doReset(resettingLayer) {
+        let keep = [];
+        if (resettingLayer) keep.push("upgrades")
+        if (resttingLayer) layerDataReset("h", keep)
+    },
     bars: {
         progBar: {
 
@@ -150,9 +151,9 @@ addLayer("cr",{
 
             width: 400,
             height: 100,
-            fillStyle: {'background-color' : "#FFFFFF"},
+            fillStyle: {'background-color' : "#FFD700"},
             baseStyle: {'background-color' : "#696969"},
-            textStyle: {'color': '#04e050'},
+            textStyle: {'color': '#000000'},
             progress() {
                 let progress = player.cr.points.div(1500)
                 if(progress.gte(1) && tmp.cr.bars.progBar.divider.eq(1500)) progress = player.cr.points.div(10000)
@@ -192,7 +193,7 @@ addLayer("cr",{
             cost: new Decimal(1500),
             unlocked(){
                 let status = false
-                if(tmp.cr.bars.progBar.progress.gte(1) || hasUpgrade("cr", "12") || tmp.cr.bars.progBar.progress.neq(player.cr.points.div(1500))) status = true
+                if(tmp.cr.bars.progBar.progress.gte(1) || hasUpgrade("cr", "14") || tmp.cr.bars.progBar.progress.neq(player.cr.points.div(1500))) status = true
                 return status
             }
         },
@@ -200,3 +201,122 @@ addLayer("cr",{
 
 })
 
+addLayer("h", {
+    name: "hydrogen", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol() { // This appears on the layer's node. Default is the id with the first letter capitalized
+        return `
+        <p>H
+        <p class='cBreak' style='font-size:16px'>1 | 1.007</p>
+        </p>`
+      },
+    row: 3, // Row the layer is in on the tree (0 is the first row)
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+	    points: new Decimal(0),
+        total: new Decimal(0),
+	    best: new Decimal(0),
+    }},
+    color: "white", //#ADD8E6
+    requires: new Decimal(10), // Can be a function that takes requirement increases into account
+    resource: "hydrogen", // Name of prestige currency
+    baseResource: "atoms", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 1, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses. Edit by King_B3H: Can reduce the cost or increase cost
+        let mult = new Decimal(1);
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses Edit by King_B3H: Can reduce the cost or increase cost.
+        let exp = new Decimal(1)
+        if (hasUpgrade("h", 31)) exp = exp.times(1.05);
+        return exp;
+    },
+    directMult(){ //Directly multiplies the resource gain of that layer
+        let multiplier = new Decimal(1);
+        if (hasUpgrade('h', 21)) multiplier = multiplier.times(upgradeEffect('h', 21))
+        return multiplier
+    },
+    hotkeys: [
+        {key: "h", description: "H: Reset for hydrogen atoms", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){
+        let show = false
+        if (hasUpgrade("cr", "14")) show = true
+        return show
+    },
+    doReset(resettingLayer) {
+        let keep = [];
+        if (layers[resettingLayer].row > this.row) layerDataReset("h", keep)
+    },
+    upgrades: {
+        11:{
+            title: "Atom Generator",
+            description: "Allows you to start generating atoms!",
+            cost: new Decimal(1)
+           
+        },
+        12: {
+            title: "Stronger Hydrogen I",
+            description: "Doubles your atom gain.",
+            cost: new Decimal(1),
+            unlocked() { return hasUpgrade("h", 11) },
+        },
+        13: {
+            title: "Synergetic Hydrogen",
+            description: "Best hydrogen boosts atom gain.",
+            cost: new Decimal(5),
+            effect() {
+              let effect = player.h.best.add(1).pow(0.3)
+                if (hasUpgrade('h', 32)) effect = effect.pow(1.5)
+                return effect;
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
+            unlocked() { return hasUpgrade("h", 12) },
+        },
+        21: {
+            title: "More Hydrogen",
+            description: "Atoms boost hydrogen",
+            cost: new Decimal(10),
+            effect() {
+                let effect = new Decimal(1)
+                effect = effect.add(player.points.add(1).log10().pow(0.5))
+                return effect
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
+            unlocked() { return hasUpgrade("h", 13) },
+        },
+        22: {
+            title: "Stronger Hydrogen II",
+            description: "Triples atom gain.",
+            cost: new Decimal(50),
+            unlocked() { return hasUpgrade("h", 21) },
+        },
+        23: {
+            title: "Atomical I",
+            description: "Atoms boost atom gain",
+            cost: new Decimal(100),
+            effect() {
+                let effect = player.points.pow(0.1)
+                if(player.points.lt(1)){
+                    effect = new Decimal(1)
+                }
+                return effect
+            },
+            gainMult(){
+                let mult = new Decimal(1)
+                if(hasUpgrade('h', 23)) mult = mult.times(upgradeEffect('h', 23))
+                return mult
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
+            unlocked() { return hasUpgrade("h", 21) },
+        },
+        31: {
+          title: "Even more synergy!!",
+            description: 'The effect of <b>Synergetic Hydrogen</b> is raised to the 1.5',
+            cost: new Decimal(1000),
+            unlocked() {return hasAchievement('a', 14) && hasUpgrade("h", 23)}
+        },
+    },
+})
