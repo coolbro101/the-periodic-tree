@@ -161,7 +161,7 @@ addLayer("cr",{
         },
 	12: {
 		title: "Get Timewalled lmao",
-		description: "This will take a while. Quadruple the effect of A Start."
+		description: "This will take a while. Quadruple the effect of A Start.",
 		cost: new Decimal(20)
 	}
     },
