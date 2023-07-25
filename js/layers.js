@@ -154,7 +154,7 @@ addLayer("cr",{
             baseStyle: {'background-color' : "#696969"},
             textStyle: {'color': '#04e050'},
             progress() {
-                let progress = player.cr.points.div(50)
+                let progress = player.cr.points.div(1500)
                 if(progress.gte(1) && tmp.cr.bars.progBar.divider.eq(1500)) progress = player.cr.points.div(10000)
                 return progress
             },
