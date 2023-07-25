@@ -11,12 +11,28 @@ addLayer("a",{
             name: "The Big Bang",
             tooltip: "You have done your first creation... I wonder what's next...",
             done(){return player.cr.points.gt(0)},
-                        style() {
+            style() {
                 return hasAchievement(this.layer, this.id) ? "" : {
                   backgroundImage: ""
                 }
               },
             image: "https://th.bing.com/th/id/OIP.B-k2pblYQTZL_HSKGKNWRAHaEK?w=310&h=180&c=7&r=0&o=5&pid=1.7"
+        },
+        12:{
+            name: "Breaking the timewall",
+            tooltip: "omg you actually get content now. Reward: 10 Atoms",
+            done(){return tmp.cr.bars.progBar.progress.gte(1)},
+            onComplete(){
+                player.points = new Decimal(10)
+            },
+            done(){return player.cr.points.gt(0)},
+          style() {
+            return hasAchievement(this.layer, this.id) ? "" : {
+                backgroundImage: ""
+             }
+         },
+            image: "https://th.bing.com/th/id/OIP.N_Ts9vyIZqVbp5sDUSENpgHaFq?w=248&h=190&c=7&r=0&o=5&pid=1.7"
+
         },
         /*11:{
             name: "A beginning",
@@ -153,6 +169,7 @@ addLayer("cr",{
             height: 100,
             fillStyle: {'background-color' : "#FFD700"},
             baseStyle: {'background-color' : "#696969"},
+            borderStyle: {'border-width' : "10px"},
             textStyle: {'color': '#000000'},
             progress() {
                 let progress = player.cr.points.div(1500)
@@ -195,7 +212,7 @@ addLayer("cr",{
                 let status = false
                 if(tmp.cr.bars.progBar.progress.gte(1) || hasUpgrade("cr", "14") || tmp.cr.bars.progBar.progress.neq(player.cr.points.div(1500))) status = true
                 return status
-            }
+            },
         },
     },
 
