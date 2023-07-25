@@ -131,6 +131,7 @@ addLayer("cr",{
     effect(){
         let effect = new Decimal(0)
         if(hasUpgrade("cr", "11")) effect = new Decimal(0.1)
+	    //NOTE: if you have a better formula for this put it here. Also, the thing that says generating x points/s is completely broken - it gains much faster than what it says. try to fix pls another note on line 165
 	if(hasUpgrade("cr", "13")) effect = effect.times(((player.points).times(1e-2)).add(1))
         return effect
     },
