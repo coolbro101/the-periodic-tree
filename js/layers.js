@@ -131,7 +131,7 @@ addLayer("cr",{
     effect(){
         let effect = new Decimal(0)
         if(hasUpgrade("cr", "11")) effect = new Decimal(0.1)
-	if(hasUpgrade("cr", "13")) effect = effect.times(1 += (player.points /= 100))
+	if(hasUpgrade("cr", "13")) effect = effect.times(((player.points).times(1e-2)).add(1))
         return effect
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
