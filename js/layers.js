@@ -130,6 +130,7 @@ addLayer("cr",{
     effect(){
         let effect = new Decimal(0)
         if(hasUpgrade("cr", "11")) effect = new Decimal(0.1)
+	if(hasUpgrade("cr", "11" && hasUpgrade("cr", 12)) effect = new Decimal(0.4)
         return effect
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -159,6 +160,11 @@ addLayer("cr",{
             description: "Generate 0.1 creator points per second",
             cost: new Decimal(0),
         },
+	12: {
+		title: "Get Timewalled lmao",
+		description: "This will take a while. Quadruple the effect of A Start."
+		cost: new Decimal(20)
+	}
     },
 
 })
