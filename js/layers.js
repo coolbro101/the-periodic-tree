@@ -163,12 +163,12 @@ addLayer("cr",{
 	    //upgrade 12 btw
 	12: {
 		title: "Get Timewalled",
-		description: "This will take a while. Quadruple your creation point gain.",
+		description: "This will take a while. Start generating atoms at a steady flow of 0.4/s",
 		cost: new Decimal(20)
 	},
 	13: {
 		title: "This Is Meant To Be Slow",
-		description: "You might grow a year older while waiting for this upgrade! Creation points boost their own gain.",
+		description: "You might grow a year older while waiting for this upgrade! Atoms boost creator point gain.",
 		cost: new Decimal(100)
 	},
 	
