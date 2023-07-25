@@ -159,11 +159,19 @@ addLayer("cr",{
             description: "Generate 0.1 creator points per second",
             cost: new Decimal(0),
         },
+	    //NOTE: bent implement this for some reason it no workie i tried in mod.js but it doesnt do anything rn fsr
+	    //upgrade 12 btw
 	12: {
-		title: "Get Timewalled lmao",
-		description: "This will take a while. Quadruple the effect of A Start.",
+		title: "Get Timewalled",
+		description: "This will take a while. Quadruple your creation point gain.",
 		cost: new Decimal(20)
-	}
+	},
+	13: {
+		title: "This Game Is Meant To Be Slow",
+		description: "You might grow a year older while waiting for this upgrade! Creation points boost their own gain.",
+		cost: new Decimal(100)
+	},
+	
     },
 
 })
