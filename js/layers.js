@@ -167,12 +167,13 @@ addLayer("d",{
     symbol: "D",
     position: 0,
     startData() {return{
-        unlocked: true,
+        unlocked: false,
         points: new Decimal(0),
         total:new Decimal(0),
         best: new Decimal(0),
     }},
-    color: "yellow",
+	 branches: ["cr"],
+    color: "orange",
     requires(){
             return new Decimal(1.38e10)
         },
@@ -195,7 +196,7 @@ addLayer("d",{
     hotkeys: [
         {key: "d", description: "d: Reset for discoveries", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    layerShown(){return true},
+    layerShown(){return player.cr.unlocked},
 
     
     upgrades: {
