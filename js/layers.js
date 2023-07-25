@@ -130,7 +130,6 @@ addLayer("cr",{
     effect(){
         let effect = new Decimal(0)
         if(hasUpgrade("cr", "11")) effect = new Decimal(0.1)
-	if(hasUpgrade("cr", "11" && hasUpgrade("cr", 12)) effect = new Decimal(0.4)
         return effect
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
