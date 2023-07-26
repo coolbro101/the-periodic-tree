@@ -144,7 +144,7 @@ addLayer("cr",{
     },
     effect(){
         let effect = new Decimal(0)
-        if(hasUpgrade("cr", "11")) effect = new Decimal(200)
+        if(hasUpgrade("cr", "11")) effect = new Decimal(0.5)
         if(hasUpgrade("cr", "12")) effect = new Decimal(1)
         if(hasUpgrade("cr", "13")) effect = new Decimal(5)
         return effect
