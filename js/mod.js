@@ -1,7 +1,7 @@
 let modInfo = {
 	name: "The Periodic Tree",
 	id: "mymod",
-	author: "amogus22 and King-B3H",
+	author: "amogus22, King-B3H, FebruaryTheDuck",
 	pointsName: "atoms",
 	modFiles: ["layers.js", "tree.js"],
 
