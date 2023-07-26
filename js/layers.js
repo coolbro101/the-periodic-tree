@@ -121,6 +121,7 @@ addLayer("cr",{
     color: "yellow",
     resource: "creator points",
     baseResource: "atoms",
+	branches: ["h"],
     baseAmount() {return player.points},
     type: "static",
     exponent: 1,
