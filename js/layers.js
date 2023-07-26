@@ -144,7 +144,7 @@ addLayer("cr",{
     },
     effect(){
         let effect = new Decimal(0)
-        if(hasUpgrade("cr", "11")) effect = new Decimal(0.5)
+        if(hasUpgrade("cr", "11")) effect = new Decimal(200)
         if(hasUpgrade("cr", "12")) effect = new Decimal(1)
         if(hasUpgrade("cr", "13")) effect = new Decimal(5)
         return effect
@@ -175,14 +175,14 @@ addLayer("cr",{
             textStyle: {'color': '#000000'},
             divider(){
                 let divider = new Decimal(1500)
-                if(player.cr.points.gte(1500)) divider = new Decimal(10000)
-                if(player.cr.points.lt(1500) && hasUpgrade("cr", 14)) divider = new Decimal(10000)
+                if(player.cr.points.gte(1500)) divider = new Decimal(1.38e10)
+                if(player.cr.points.lt(1500) && hasUpgrade("cr", 14)) divider = new Decimal(1.38e10)
                 return divider
             },
             progress() {
                 let divider = tmp.cr.bars.progBar.divider
                 let progress = player.cr.points.div(divider)
-                if(progress.lte(1) && divider.eq(10000)) progress = player.cr.points.div(divider)
+                if(progress.lte(1) && divider.eq(1.38e10)) progress = player.cr.points.div(divider)
                 if(progress.gte(1) && divider.eq(1500)) progress = player.cr.points.div(divider)
                 if(progress.lte(1) && divider.eq(1500)) progress = player.cr.points.div(divider)
                 return progress
@@ -195,22 +195,20 @@ addLayer("cr",{
     }, 
     infoboxes: {
         lore1: {
-            title: "A mysterious place...",
-            body: `
-            You:<q>Huh? What is this place?</q><br>
-            ???:<q>Oh great, you finally woke up. I thought I have to clean up another corpse again.</q><br>
-            You:<q>What's all this corpse cleaning and me being teleported to another world about?</q><br>
-            ???:<q>So you did not belong to this world?</q><br>
-            You:<q>I was at my home having some sleep after grinding an incremental game and next thing I know, I am here.</q><br>
-            ???:<q>I see... Having numbers go up is what we do here as well!</q><br>
-            You:<q>Really?</q><br>
-            ???:<q>Yes! My name is Chal, and I'm have to do basically every chore in this place...</q><br>
-            You:<q>Oh, I'm sorry to hear.</q><br>
-            Chal:<q>I can try helping you go back to your world, but before that you need to accumulate a lot of Challenge Power first. Try getting some by clearing these challenges first!`,
+            title: "Lore",
             unlocked(){
-                return hasAchievement("a", "11")
-            }
-        },
+                return hasUpgrade("cr", "14")
+             },
+            body() { return `In the beginning, all was simple - there were 4 elements: Earth, 
+            Fire, Water, and Air. All was in peace and harmony... until the fire nation attacked. 
+            Anyways, in the beginning, there was creation. I do 
+            not care what you believe in, or what religion you are, but all of 
+            them have a starting point of the world being created. In this case, 
+            The Big Bang will be what we will refer to since most people accept 
+            that as a possible source of creation. The Big Bang happened around
+             13.8 billion years ago - the number of creation points you will need 
+             to get to the next layer. Good Luck! Have fun with the time walls!`},
+       },
     },
     upgrades: {
         11: {
