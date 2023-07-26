@@ -118,14 +118,16 @@ addLayer("cr",{
         total:new Decimal(0),
         best: new Decimal(0),
     }},
+	
     infoboxes: {
         lore: {
             title: "Lore",
-            body() { return `In the beginning, all was simple - there were 4 elements: Earth, Fire, Water, and Air. All was in peace and harmony... until the fire nation attacked. Anyways, in the beginning, there was creation. I do not care what you believe in, or what religion you are, but all of them have a starting point of the world being created. In this case, The Big Bang will be what we will refer to since most people accept that as a possible source of creation. The Big Bang happened around 13.8 billion years ago - the number of creation points you will need to get to the next layer. Good Luck! Have fun with the time walls!`
+            body() { return '<img src="lore11.png" width="500"><br>In the beginning, all was simple - there were 4 elements: Earth, Fire, Water, and Air. All was in peace and harmony... until the fire nation attacked. Anyways, in the beginning, there was creation. I do not care what you believe in, or what religion you are, but all of them have a starting point of the world being created. In this case, The Big Bang will be what we will refer to since most people accept that as a possible source of creation. The Big Bang happened around 13.8 billion years ago - the number of creation points you will need to get to the next layer. Good Luck! Have fun with the time walls!'
 		 },
     
        },
-    }
+    },
+    
     color: "yellow",
     resource: "creator points",
     baseResource: "atoms",
