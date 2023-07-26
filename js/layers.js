@@ -203,7 +203,8 @@ addLayer("cr",{
             unlocked(){
                 return hasUpgrade("cr", "14")
              },
-            body() { return `In the beginning, all was simple - there were 4 elements: Earth, 
+            body() { return `<img src="lore11.png" width="500"><br>
+	    In the beginning, all was simple - there were 4 elements: Earth, 
             Fire, Water, and Air. All was in peace and harmony... until the fire nation attacked. 
             Anyways, in the beginning, there was creation. I do 
             not care what you believe in, or what religion you are, but all of 
