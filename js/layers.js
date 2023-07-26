@@ -21,11 +21,10 @@ addLayer("a",{
         12:{
             name: "Breaking the timewall",
             tooltip: "omg you actually get content now. Reward: 10 Atoms",
-            done(){return tmp.cr.bars.progBar.progress.gte(1)},
+            done(){return hasUpgrade("cr", "14")},
             onComplete(){
                 player.points = new Decimal(10)
             },
-            done(){return player.cr.points.gt(0)},
           style() {
             return hasAchievement(this.layer, this.id) ? "" : {
                 backgroundImage: ""
@@ -118,36 +117,9 @@ addLayer("cr",{
         total:new Decimal(0),
         best: new Decimal(0),
     }},
-	/*
-    infoboxes: {
-        lore: {
-            title: "Lore",
-            body() { return `In the beginning, all was simple - there were 4 elements: Earth, Fire, Water, and Air. All was in peace and harmony... until the fire nation attacked. Anyways, in the beginning, there was creation. I do not care what you believe in, or what religion you are, but all of them have a starting point of the world being created. In this case, The Big Bang will be what we will refer to since most people accept that as a possible source of creation. The Big Bang happened around 13.8 billion years ago - the number of creation points you will need to get to the next layer. Good Luck! Have fun with the time walls!`
-		 },
-    
-       },
-    },
-    */
-	infoboxes: {
-        lore: {
-            title: "Tier 1 Lore",
-            body: `
-            You:<q>Huh? What is this place?</q><br>
-            ???:<q>Oh great, you finally woke up. I thought I have to clean up another corpse again.</q><br>
-            You:<q>What's all this corpse cleaning and me being teleported to another world about?</q><br>
-            ???:<q>So you did not belong to this world?</q><br>
-            You:<q>I was at my home having some sleep after grinding an incremental game and next thing I know, I am here.</q><br>
-            ???:<q>I see... Having numbers go up is what we do here as well!</q><br>
-            You:<q>Really?</q><br>
-            ???:<q>Yes! My name is Chal, and I'm have to do basically every chore in this place...</q><br>
-            You:<q>Oh, I'm sorry to hear.</q><br>
-            Chal:<q>I can try helping you go back to your world, but before that you need to accumulate a lot of Challenge Power first. Try getting some by clearing these challenges first!`,
-        },
-    },
     color: "yellow",
     resource: "creator points",
     baseResource: "atoms",
-	branches: ["h"],
     baseAmount() {return player.points},
     type: "static",
     exponent: 1,
@@ -161,7 +133,8 @@ addLayer("cr",{
     function() {return 'You are generating ' + format(tmp.cr.effect) + '/s creation points.'},],
     "blank",
     "upgrades",
-    ["bar","progBar"]
+    ["bar","progBar"],
+    ["infobox", "lore1"],
     ],
 
     update(diff) {
@@ -169,7 +142,7 @@ addLayer("cr",{
     },
     effect(){
         let effect = new Decimal(0)
-        if(hasUpgrade("cr", "11")) effect = new Decimal(12312312)
+        if(hasUpgrade("cr", "11")) effect = new Decimal(200)
         if(hasUpgrade("cr", "12")) effect = new Decimal(1)
         if(hasUpgrade("cr", "13")) effect = new Decimal(5)
         return effect
@@ -198,23 +171,45 @@ addLayer("cr",{
             baseStyle: {'background-color' : "#696969"},
             borderStyle: {'border-width' : "10px"},
             textStyle: {'color': '#000000'},
+            divider(){
+                let divider = new Decimal(1500)
+                if(player.cr.points.gte(1500)) divider = new Decimal(10000)
+                if(player.cr.points.lt(1500) && hasUpgrade("cr", 14)) divider = new Decimal(10000)
+                return divider
+            },
             progress() {
-                let progress = player.cr.points.div(1500)
-                if(progress.gte(1) && tmp.cr.bars.progBar.divider.eq(1500)) progress = player.cr.points.div(10000)
+                let divider = tmp.cr.bars.progBar.divider
+                let progress = player.cr.points.div(divider)
+                if(progress.lte(1) && divider.eq(10000)) progress = player.cr.points.div(divider)
+                if(progress.gte(1) && divider.eq(1500)) progress = player.cr.points.div(divider)
+                if(progress.lte(1) && divider.eq(1500)) progress = player.cr.points.div(divider)
                 return progress
             },
-            divider(){
-                let value = new Decimal(1500)
-                if (tmp.cr.bars.progBar.progress.neq(player.cr.points.div(1500))) value = new Decimal(10000)
-                return value
-            },
             display() {
-                let display = format(player.cr.points) + ' / ' + tmp.cr.bars.progBar.divider + '<br><p>Unlocks 1 More Upgrade<p>'
+                let display = format(player.cr.points) + ' / ' + format(tmp.cr.bars.progBar.divider) + '<br><p>Unlocks 1 More Upgrade<p>'
                 return display
             },
         },
     }, 
-    
+    infoboxes: {
+        lore1: {
+            title: "A mysterious place...",
+            body: `
+            You:<q>Huh? What is this place?</q><br>
+            ???:<q>Oh great, you finally woke up. I thought I have to clean up another corpse again.</q><br>
+            You:<q>What's all this corpse cleaning and me being teleported to another world about?</q><br>
+            ???:<q>So you did not belong to this world?</q><br>
+            You:<q>I was at my home having some sleep after grinding an incremental game and next thing I know, I am here.</q><br>
+            ???:<q>I see... Having numbers go up is what we do here as well!</q><br>
+            You:<q>Really?</q><br>
+            ???:<q>Yes! My name is Chal, and I'm have to do basically every chore in this place...</q><br>
+            You:<q>Oh, I'm sorry to hear.</q><br>
+            Chal:<q>I can try helping you go back to your world, but before that you need to accumulate a lot of Challenge Power first. Try getting some by clearing these challenges first!`,
+            unlocked(){
+                return hasAchievement("a", "11")
+            }
+        },
+    },
     upgrades: {
         11: {
             title: "A Start",
