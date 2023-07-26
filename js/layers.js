@@ -134,6 +134,8 @@ addLayer("cr",{
     "blank",
     "upgrades",
     ["bar","progBar"],
+    "blank",
+    "blank",
     ["infobox", "lore1"],
     ],
 
