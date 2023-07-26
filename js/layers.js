@@ -36,7 +36,7 @@ addLayer("a",{
         },
         13:{
             name: "A beginning",
-            tooltip: "Do your first hydrogen reset",
+            tooltip: "Do your first hydrogen reset. Reward: 1 new creation upgrade.",
             unlocked() {return hasAchievement('a', 12)},
             done() {return player.h.points.gt(0)},
             style() {
@@ -147,9 +147,10 @@ addLayer("cr",{
     },
     effect(){
         let effect = new Decimal(0)
-        if(hasUpgrade("cr", "11")) effect = new Decimal(200)
-        if(hasUpgrade("cr", "12")) effect = new Decimal(1)
-        if(hasUpgrade("cr", "13")) effect = new Decimal(5)
+        if(hasUpgrade("cr", 11)) effect = new Decimal(0.5)
+        if(hasUpgrade("cr", 12)) effect = new Decimal(1)
+        if(hasUpgrade("cr", 13)) effect = new Decimal(5)
+        if(hasUpgrade("cr", 21)) effect = effect.times(upgradeEffect("cr", 21))
         return effect
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -239,6 +240,19 @@ addLayer("cr",{
                 return status
             },
         },
+        21: {
+            title: "Gaining Traction",
+            description: "Creation Point Generation is boosted by the square root of your total hydrogen. Note: Creation Upgrades are meant to be slow to get.",
+            cost: new Decimal(10000),
+            unlocked(){
+                return hasAchievement("a", 13)
+            },
+            effect(){
+                let effect = player.h.total.pow(0.5).add(1)
+                return effect
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
+        }
     },
 
 })
