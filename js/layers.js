@@ -21,7 +21,8 @@ addLayer("a",{
         12:{
             name: "Breaking the timewall",
             tooltip: "omg you actually get content now. Reward: 10 Atoms",
-            done(){return hasUpgrade("cr", "14")},
+            unlocked() {return hasUpgrade('cr', 14)},
+            done(){return hasUpgrade("cr", 14)},
             onComplete(){
                 player.points = new Decimal(10)
             },
@@ -33,9 +34,10 @@ addLayer("a",{
             image: "https://th.bing.com/th/id/OIP.N_Ts9vyIZqVbp5sDUSENpgHaFq?w=248&h=190&c=7&r=0&o=5&pid=1.7"
 
         },
-        /*11:{
+        13:{
             name: "A beginning",
             tooltip: "Do your first hydrogen reset",
+            unlocked() {return hasAchievement('a', 12)},
             done() {return player.h.points.gt(0)},
             style() {
                 return hasAchievement(this.layer, this.id) ? "" : {
@@ -44,10 +46,10 @@ addLayer("a",{
               },
             image: "https://th.bing.com/th/id/OIP.5iyUUKSTmL-taBas--_oMAAAAA?w=156&h=180&c=7&r=0&o=5&pid=1.7"
         },
-        12:{
+        14:{
             name: "Getting the hang of it",
             tooltip: "Have 3 or more hydrogen upgrades",
-            unlocked() {return hasAchievement("a", 11)},
+            unlocked() {return hasAchievement("a", 13)},
             done() {return player.h.upgrades.length >= 3},
             style() {
                 return hasAchievement(this.layer, this.id) ? "" : {
@@ -56,10 +58,10 @@ addLayer("a",{
               },
             image: "https://th.bing.com/th/id/OIP.NP5QSvrCh0DK8Gao192sPwHaFK?w=240&h=180&c=7&r=0&o=5&pid=1.7"
         },
-        13:{
+        15:{
             name: "Wow you're really still playing?",
             tooltip: "Have 20 total hydrogen",
-            unlocked() {return hasAchievement('a', 12)},
+            unlocked() {return hasAchievement('a', 13)},
             done() {return player.h.total.gte(20)},
             style() {
                 return hasAchievement(this.layer, this.id) ? "" : {
@@ -68,6 +70,7 @@ addLayer("a",{
               },  
             image: "https://th.bing.com/th/id/OIP.JwrL266NzPtHWrCn4dxmAwHaIN?w=179&h=199&c=7&r=0&o=5&pid=1.7"
         },
+        /*
         14:{
             name: "Moving on",
             tooltip: "Do your first row 2 reset. Reward: Unlock more hydrogen upgrades",
