@@ -16,6 +16,21 @@ function getStartOptions() {
 		tooltipForcing: true,
 	}
 }
+function swtichMusic() {
+	if(player.ab.points.gte(1)){
+		options.musicToggle+=1
+		if(options.musicToggle>=5||new Decimal(options.musicToggle).gte(player.ab.points.add(1))){
+			document.getElementById("idAudio"+(options.musicToggle-1)).pause()
+			document.getElementById("idAudio"+(options.musicToggle-1)).currentTime = 0
+			options.musicToggle = 0
+		}
+		else{
+			if(options.musicToggle>=2)document.getElementById("idAudio"+(options.musicToggle-1)).pause()
+			if(options.musicToggle>=2)document.getElementById("idAudio"+(options.musicToggle-1)).currentTime = 0
+			document.getElementById("idAudio"+options.musicToggle).play()
+		}
+	}
+}
 
 function toggleOpt(name) {
 	if (name == "oldStyle" && styleCooldown > 0)

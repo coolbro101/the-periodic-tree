@@ -1,13 +1,13 @@
 let modInfo = {
 	name: "The Periodic Tree",
 	id: "mymod",
-	author: "amogus22 and King-B3H",
+	author: "amogus22, King-B3H, FebruaryTheDuck",
 	pointsName: "atoms",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
@@ -43,6 +43,14 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(0)
+		let gain = new Decimal(0)
+		//Hydrogen Upgrades
+		if(hasUpgrade('h', 11)) gain = new Decimal(1)
+		if(hasUpgrade('h', 12)) gain = gain.times(2)
+		if(hasUpgrade('h', 13)) gain = gain.times(upgradeEffect('h',13))
+		if(hasUpgrade('h', 21)) gain = gain.times(upgradeEffect('h',21))
+		if(hasUpgrade('h', 22)) gain = gain.times(3)
+		if(hasUpgrade('h', 23)) gain = gain.times(upgradeEffect('h',23))
 	return gain
 }
 
