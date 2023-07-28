@@ -22,6 +22,21 @@ addLayer("cr",{
 	
         return mult
     },
+    tabFormat: ["main-display",
+    "blank",
+    ["display-test",
+    function() {return 'You gain ' + tmp.cr.effect + ' creator points every second'},],
+    "blank",
+    "upgrades",
+    ["display-text",
+    function() {return 'e'},]
+    ],
+    update(diff) {
+        if (hasUpgrade("cr", "11")) player.cr.points = player.cr.points.add(tmp.cr.effect.times(diff));
+    },
+    effect(){
+        return new Decimal(1)
+    },
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
     },
@@ -30,20 +45,13 @@ addLayer("cr",{
         {key: "c", description: "c: Reset for creator points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
-    passiveGeneration(){
-        let status = false
-        if (hasUpgrade("cr", "11")) status = true
-        return status
-    },
+
     upgrades: {
         11: {
             title: "Start",
             description: "Generate 1 creator point per second",
-            cost: new Decimal(1)
+            cost: new Decimal(0)
         },
-        12: {
-
-        }
     },
 })
 
