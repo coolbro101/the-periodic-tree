@@ -42,7 +42,7 @@ function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
-	let gain = new Decimal(0)
+		let gain = new Decimal(0)
 		//Hydrogen Upgrades
 		if(hasUpgrade('h', 11)) gain = new Decimal(1)
 		if(hasUpgrade('h', 12)) gain = gain.times(2)
