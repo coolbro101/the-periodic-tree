@@ -161,13 +161,6 @@ addLayer("cr",{
         {key: "c", description: "c: Reset for creator points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
-
-    upgrades: {
-        11: {
-            title: "Start",
-            description: "Generate 1 creator point per second",
-            cost: new Decimal(0)
-        },
     doReset(resettingLayer) {
         let keep = [];
         if (resettingLayer) keep.push("upgrades")
@@ -188,6 +181,8 @@ addLayer("cr",{
                 let divider = new Decimal(1500)
                 if(player.cr.points.gte(1500)) divider = new Decimal(1.38e10)
                 if(player.cr.points.lt(1500) && hasUpgrade("cr", 14)) divider = new Decimal(1.38e10)
+                if(player.cr.points.gte(1.38e10)) divider = 1
+                if(player.cr.points.lt(1.38e10) && hasUpgrade("cr", 22)) divider = 1
                 return divider
             },
             progress() {
@@ -210,8 +205,7 @@ addLayer("cr",{
             unlocked(){
                 return hasUpgrade("cr", "14")
              },
-            body() { return `<img src="lore11.png" width="500"><br>
-	    In the beginning, all was simple - there were 4 elements: Earth, 
+            body() { return `In the beginning, all was simple - there were 4 elements: Earth, 
             Fire, Water, and Air. All was in peace and harmony... until the fire nation attacked. 
             Anyways, in the beginning, there was creation. I do 
             not care what you believe in, or what religion you are, but all of 
@@ -250,20 +244,25 @@ addLayer("cr",{
         },
         21: {
             title: "Gaining Traction",
-            description: "Creation Point Generation is boosted by the square root of your total hydrogen. Note: Creation Upgrades are meant to be slow to get.",
+            description: "Creation Point Generation is boosted exponentially by your total hydrogen. Note: Creation Upgrades are meant to be slow to get.",
             cost: new Decimal(10000),
             unlocked(){
                 return hasAchievement("a", 13)
             },
             effect(){
-                let effect = player.h.total.pow(0.5).add(1)
+                let effect = player.h.total.pow(0.25).add(1)
                 return effect
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
+        },
+        22:{
+            title: "Placeholder",
+            description: "Placeholder text",
+            cost: new Decimal(1e12)
         }
     },
 
-}),
+})
 
 addLayer("h", {
     name: "hydrogen", // This is optional, only used in a few places, If absent it just uses the layer id.
