@@ -21,8 +21,8 @@ addLayer("a",{
         12:{
             name: "Breaking the timewall",
             tooltip: "omg you actually get content now. Reward: 10 Atoms",
-            unlocked() {return player.h.unlocked},
-            done(){return player.h.unlocked},
+            unlocked() {return hasAchievement("a", 11)},
+            done(){return hasUpgrade("cr", 14)},
             onComplete(){
                 player.points = new Decimal(10)
             },
