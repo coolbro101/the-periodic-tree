@@ -21,8 +21,8 @@ addLayer("a",{
         12:{
             name: "Breaking the timewall",
             tooltip: "omg you actually get content now. Reward: 10 Atoms",
-            unlocked() {return hasUpgrade('cr', 14)},
-            done(){return hasUpgrade("cr", 14)},
+            unlocked() {return player.h.unlocked},
+            done(){return player.h.unlocked,
             onComplete(){
                 player.points = new Decimal(10)
             },
@@ -149,7 +149,7 @@ addLayer("cr",{
         let effect = new Decimal(0)
         if(hasUpgrade("cr", 11)) effect = new Decimal(0.5)
         if(hasUpgrade("cr", 12)) effect = new Decimal(1)
-        if(hasUpgrade("cr", 13)) effect = new Decimal(5)
+        if(hasUpgrade("cr", 13)) effect = new Decimal(5000000)
         if(hasUpgrade("cr", 21)) effect = effect.times(upgradeEffect("cr", 21))
         return effect
     },
