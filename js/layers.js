@@ -194,9 +194,14 @@ addLayer("cr",{
                 return progress
             },
             display() {
-                let display = format(player.cr.points) + ' / ' + format(tmp.cr.bars.progBar.divider) + '<br><p>Unlocks 1 More Upgrade<p>'
+                let display = format(player.cr.points) + ' / ' + format(tmp.cr.bars.progBar.divider) + 	'<br><p>Unlocks 1 More Upgrade<p>'
                 return display
             },
+            unlocked(){
+                let status = true
+                if(hasUpgrade("cr", 22)) status = false
+                return status
+            }
         },
     }, 
     infoboxes: {
@@ -257,7 +262,12 @@ addLayer("cr",{
         22:{
             title: "Placeholder",
             description: "Placeholder text",
-            cost: new Decimal(1e12)
+            cost: new Decimal(1e12),
+            unlocked(){
+                let status = false
+                if(tmp.cr.bars.progBar.progress.gte(1) || hasUpgrade("cr", "22") || tmp.cr.bars.progBar.progress.neq(player.cr.points.div(1.38e30))) status = true
+                return status
+            },
         }
     },
 
