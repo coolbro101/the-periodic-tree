@@ -249,7 +249,7 @@ addLayer("cr",{
                 return hasAchievement("a", 13)
             },
             effect(){
-                let effect = player.h.total.pow(0.25).add(1)
+                let effect = player.h.total..log10()pow(0.25).add(1)
                 return effect
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
