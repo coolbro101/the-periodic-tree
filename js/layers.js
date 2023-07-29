@@ -1,10 +1,3 @@
-/*
-    requires(){
-        let cost = (new Decimal(3).pow(player.l.points.add(1))).times(200)
-        if(player.he.unlocked) cost = new Decimal(1e6)
-        if(player.he.unlocked && player.l.unlocked) cost = (new Decimal(3).pow(player.l.points.add(1))).times(200)
-        return cost
-        }, */
 addLayer("a",{
     startData() {return {unlocked: true,}},
     color: "#FC6A03",
