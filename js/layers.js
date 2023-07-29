@@ -140,6 +140,11 @@ addLayer("cr",{
     "blank",
     "blank",
     ["infobox", "lore1"],
+    "blank",
+    "blank",
+    "blank",
+    ["display-text",
+    function() {return ' Note: Creation Upgrades are meant to be slow to get.'}]
     ],
 
     update(diff) {
@@ -248,7 +253,7 @@ addLayer("cr",{
         },
         21: {
             title: "Gaining Traction",
-            description: "Creation Point Generation is boosted exponentially by your total hydrogen. Note: Creation Upgrades are meant to be slow to get.",
+            description: "Creation Point Generation is boosted exponentially by your total hydrogen.",
             cost: new Decimal(10000),
             unlocked(){
                 return hasAchievement("a", 13)
