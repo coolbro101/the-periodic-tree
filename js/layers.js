@@ -47,22 +47,10 @@ addLayer("a",{
             image: "https://th.bing.com/th/id/OIP.5iyUUKSTmL-taBas--_oMAAAAA?w=156&h=180&c=7&r=0&o=5&pid=1.7"
         },
         14:{
-            name: "Getting the hang of it",
-            tooltip: "Have 3 or more hydrogen upgrades",
-            unlocked() {return hasAchievement("a", 13)},
-            done() {return player.h.upgrades.length >= 3},
-            style() {
-                return hasAchievement(this.layer, this.id) ? "" : {
-                  backgroundImage: ""
-                }
-              },
-            image: "https://th.bing.com/th/id/OIP.NP5QSvrCh0DK8Gao192sPwHaFK?w=240&h=180&c=7&r=0&o=5&pid=1.7"
-        },
-        15:{
             name: "Wow you're really still playing?",
-            tooltip: "Have 20 total hydrogen",
+            tooltip: "Have 100 total hydrogen",
             unlocked() {return hasAchievement('a', 13)},
-            done() {return player.h.total.gte(20)},
+            done() {return player.h.total.gte(100)},
             style() {
                 return hasAchievement(this.layer, this.id) ? "" : {
                   backgroundImage: ""
@@ -142,9 +130,8 @@ addLayer("cr",{
     ["infobox", "lore1"],
     "blank",
     "blank",
-    "blank",
     ["display-text",
-    function() {return ' Note: Creation Upgrades are meant to be slow to get.'}]
+    function() {return '<h3><b> Note: Creation Upgrades are meant to be slow. <b></h3>'}]
     ],
 
     update(diff) {
@@ -152,9 +139,9 @@ addLayer("cr",{
     },
     effect(){
         let effect = new Decimal(0)
-        if(hasUpgrade("cr", 11)) effect = new Decimal(0.5)
+        if(hasUpgrade("cr", 11)) effect = new Decimal(200)
         if(hasUpgrade("cr", 12)) effect = new Decimal(1)
-        if(hasUpgrade("cr", 13)) effect = new Decimal(5e27)
+        if(hasUpgrade("cr", 13)) effect = new Decimal(10000000)
         if(hasUpgrade("cr", 21)) effect = effect.times(upgradeEffect("cr", 21))
         return effect
     },
@@ -187,7 +174,7 @@ addLayer("cr",{
                 if(player.cr.points.gte(1500)) divider = new Decimal(1.38e30)
                 if(player.cr.points.lt(1500) && hasUpgrade("cr", 14)) divider = new Decimal(1.38e30)
                 if(player.cr.points.gte(1.38e130)) divider = 1
-                if(player.cr.points.lt(1.38e30) && hasUpgrade("cr", 22)) divider = 1
+                if(player.cr.points.lt(1.38e30) && hasUpgrade("cr", 31)) divider = 1
                 return divider
             },
             progress() {
@@ -199,12 +186,12 @@ addLayer("cr",{
                 return progress
             },
             display() {
-                let display = format(player.cr.points) + ' / ' + format(tmp.cr.bars.progBar.divider) + 	'<br><p>Unlocks 1 More Upgrade<p>'
+                let display = format(player.cr.points) + ' / ' + format(tmp.cr.bars.progBar.divider) + 	'<br><p>Unlocks 1 Major Upgrade<p>'
                 return display
             },
             unlocked(){
                 let status = true
-                if(hasUpgrade("cr", 22)) status = false
+                if(hasUpgrade("cr", 31)) status = false
                 return status
             }
         },
@@ -265,12 +252,25 @@ addLayer("cr",{
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
         },
         22:{
+            title: "Creative Synergy",
+            description: "Creation Points will add to the lithium and helium effect bases.",
+            cost: new Decimal(1000000000),
+            unlocked(){
+                return hasAchievement("a", 13)
+            },
+            effect(){
+                let effect = ((player.cr.points.log10()).div(100)).pow(0.3)
+                return effect
+            },
+            effectDisplay() { return '+' + format(upgradeEffect(this.layer, this.id))},
+        },
+        31:{
             title: "Placeholder",
             description: "Placeholder text",
             cost: new Decimal(1e12),
             unlocked(){
                 let status = false
-                if(tmp.cr.bars.progBar.progress.gte(1) || hasUpgrade("cr", "22") || tmp.cr.bars.progBar.progress.neq(player.cr.points.div(1.38e30))) status = true
+                if(tmp.cr.bars.progBar.progress.gte(1) || hasUpgrade("cr", 31) || tmp.cr.bars.progBar.progress.neq(player.cr.points.div(1.38e30))) status = true
                 return status
             },
         }
@@ -307,7 +307,6 @@ addLayer("h", {
     },
     gainExp() { // Calculate the exponent on main currency from bonuses Edit by King_B3H: Can reduce the cost or increase cost.
         let exp = new Decimal(1)
-        if (hasUpgrade("h", 31)) exp = exp.times(1.05);
         return exp;
     },
     directMult(){ //Directly multiplies the resource gain of that layer
@@ -345,7 +344,8 @@ addLayer("h", {
             description: "Best hydrogen boosts atom gain.",
             cost: new Decimal(5),
             effect() {
-              let effect = player.h.best.add(1).pow(0.3)
+              let effect = new Decimal(1)
+              if(hasUpgrade("h", 13)) effect = effect.add(player.h.best.log10().div(10).pow(0.3))
                 if (hasUpgrade('h', 32)) effect = effect.pow(1.5)
                 return effect;
             },
@@ -355,10 +355,9 @@ addLayer("h", {
         21: {
             title: "More Hydrogen",
             description: "Atoms boost hydrogen",
-            cost: new Decimal(10),
+            cost: new Decimal(20),
             effect() {
-                let effect = new Decimal(1)
-                effect = effect.add(player.points.add(1).log10().pow(0.5))
+                let effect = new Decimal(1).add(player.points.log10())
                 return effect
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
@@ -367,13 +366,13 @@ addLayer("h", {
         22: {
             title: "Stronger Hydrogen II",
             description: "Triples atom gain.",
-            cost: new Decimal(50),
+            cost: new Decimal(100),
             unlocked() { return hasUpgrade("h", 21) },
         },
         23: {
             title: "Atomical I",
             description: "Atoms boost atom gain",
-            cost: new Decimal(100),
+            cost: new Decimal(300),
             effect() {
                 let effect = player.points.pow(0.1)
                 if(player.points.lt(1)){
