@@ -149,7 +149,7 @@ addLayer("cr",{
         let effect = new Decimal(0)
         if(hasUpgrade("cr", 11)) effect = new Decimal(0.5)
         if(hasUpgrade("cr", 12)) effect = new Decimal(1)
-        if(hasUpgrade("cr", 13)) effect = new Decimal(5000000)
+        if(hasUpgrade("cr", 13)) effect = new Decimal(5e27)
         if(hasUpgrade("cr", 21)) effect = effect.times(upgradeEffect("cr", 21))
         return effect
     },
@@ -249,7 +249,7 @@ addLayer("cr",{
                 return hasAchievement("a", 13)
             },
             effect(){
-                let effect = player.h.total..log10()pow(0.25).add(1)
+                let effect = player.h.total.pow(0.25).add(1)
                 return effect
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
