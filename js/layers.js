@@ -21,7 +21,7 @@ addLayer("a",{
         12:{
             name: "Breaking the timewall",
             tooltip: "omg you actually get content now. Reward: 10 Atoms",
-            unlocked() {return hasUpgrade('cr', 14)},
+            unlocked() {return hasAchievement("a", 11)},
             done(){return hasUpgrade("cr", 14)},
             onComplete(){
                 player.points = new Decimal(10)
@@ -140,6 +140,11 @@ addLayer("cr",{
     "blank",
     "blank",
     ["infobox", "lore1"],
+    "blank",
+    "blank",
+    "blank",
+    ["display-text",
+    function() {return ' Note: Creation Upgrades are meant to be slow to get.'}]
     ],
 
     update(diff) {
@@ -149,7 +154,7 @@ addLayer("cr",{
         let effect = new Decimal(0)
         if(hasUpgrade("cr", 11)) effect = new Decimal(0.5)
         if(hasUpgrade("cr", 12)) effect = new Decimal(1)
-        if(hasUpgrade("cr", 13)) effect = new Decimal(5)
+        if(hasUpgrade("cr", 13)) effect = new Decimal(5e27)
         if(hasUpgrade("cr", 21)) effect = effect.times(upgradeEffect("cr", 21))
         return effect
     },
@@ -179,24 +184,29 @@ addLayer("cr",{
             textStyle: {'color': '#000000'},
             divider(){
                 let divider = new Decimal(1500)
-                if(player.cr.points.gte(1500)) divider = new Decimal(1.38e10)
-                if(player.cr.points.lt(1500) && hasUpgrade("cr", 14)) divider = new Decimal(1.38e10)
-                if(player.cr.points.gte(1.38e10)) divider = 1
-                if(player.cr.points.lt(1.38e10) && hasUpgrade("cr", 22)) divider = 1
+                if(player.cr.points.gte(1500)) divider = new Decimal(1.38e30)
+                if(player.cr.points.lt(1500) && hasUpgrade("cr", 14)) divider = new Decimal(1.38e30)
+                if(player.cr.points.gte(1.38e130)) divider = 1
+                if(player.cr.points.lt(1.38e30) && hasUpgrade("cr", 22)) divider = 1
                 return divider
             },
             progress() {
                 let divider = tmp.cr.bars.progBar.divider
                 let progress = player.cr.points.div(divider)
-                if(progress.lte(1) && divider.eq(1.38e10)) progress = player.cr.points.div(divider)
+                if(progress.lte(1) && divider.eq(1.38e30)) progress = player.cr.points.div(divider)
                 if(progress.gte(1) && divider.eq(1500)) progress = player.cr.points.div(divider)
                 if(progress.lte(1) && divider.eq(1500)) progress = player.cr.points.div(divider)
                 return progress
             },
             display() {
-                let display = format(player.cr.points) + ' / ' + format(tmp.cr.bars.progBar.divider) + '<br><p>Unlocks 1 More Upgrade<p>'
+                let display = format(player.cr.points) + ' / ' + format(tmp.cr.bars.progBar.divider) + 	'<br><p>Unlocks 1 More Upgrade<p>'
                 return display
             },
+            unlocked(){
+                let status = true
+                if(hasUpgrade("cr", 22)) status = false
+                return status
+            }
         },
     }, 
     infoboxes: {
@@ -212,8 +222,7 @@ addLayer("cr",{
             them have a starting point of the world being created. In this case, 
             The Big Bang will be what we will refer to since most people accept 
             that as a possible source of creation. The Big Bang happened around
-             13.8 billion years ago - the number of creation points you will need 
-             to get to the next layer. Good Luck! Have fun with the time walls!`},
+             13.8 billion years ago. Good Luck! Have fun with the time walls!`},
        },
     },
     upgrades: {
@@ -244,7 +253,7 @@ addLayer("cr",{
         },
         21: {
             title: "Gaining Traction",
-            description: "Creation Point Generation is boosted exponentially by your total hydrogen. Note: Creation Upgrades are meant to be slow to get.",
+            description: "Creation Point Generation is boosted exponentially by your total hydrogen.",
             cost: new Decimal(10000),
             unlocked(){
                 return hasAchievement("a", 13)
@@ -258,7 +267,12 @@ addLayer("cr",{
         22:{
             title: "Placeholder",
             description: "Placeholder text",
-            cost: new Decimal(1e12)
+            cost: new Decimal(1e12),
+            unlocked(){
+                let status = false
+                if(tmp.cr.bars.progBar.progress.gte(1) || hasUpgrade("cr", "22") || tmp.cr.bars.progBar.progress.neq(player.cr.points.div(1.38e30))) status = true
+                return status
+            },
         }
     },
 
