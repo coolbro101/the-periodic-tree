@@ -357,7 +357,7 @@ addLayer("h", {
             description: "Atoms boost hydrogen",
             cost: new Decimal(20),
             effect() {
-                let effect = new Decimal(1).add(player.points.log10())
+                let effect = new Decimal(1).add(player.points.add(1).log10())
                 return effect
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
