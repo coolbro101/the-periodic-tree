@@ -326,6 +326,24 @@ addLayer("h", {
         let keep = [];
         if (layers[resettingLayer].row > this.row) layerDataReset("h", keep)
     },
+    tabFormat: ["main-display",
+    "prestige-button",
+    "blank",
+    "upgrades",
+    "blank",
+    "blank",
+    ["infobox", "lore2"],
+    ],
+    infoboxes: {
+        lore2: {
+            title: "Lore",
+            body() { return `Ah! Now that you have broken the timewall, you unlocked hydrogen 
+            which is the first element in your marvelous elemental journey! 
+            Hydrogen is a very important element. It is one of the elements that 
+            creates water along with oxygen! Therefore, you must accumulate as much hydrogen as
+             you can to go on to the next layer! Good luck!`},
+       },
+    },
     upgrades: {
         11:{
             title: "Atom Generator",
