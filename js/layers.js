@@ -121,7 +121,9 @@ addLayer("cr",{
     },
     tabFormat: ["main-display",
     ["display-text",
-    function() {return 'You are generating ' + format(tmp.cr.effect) + '/s creation points.'},],
+    function() {return 'You are generating ' + format(tmp.cr.generationQuantity) + '/s creation points.'},],
+    ["display-text",
+    function() {return 'All currencies are raised to the ' + format(tmp.cr.effect) + ' power'},],
     "blank",
     "upgrades",
     ["bar","progBar"],
@@ -135,15 +137,22 @@ addLayer("cr",{
     ],
 
     update(diff) {
-        if (hasUpgrade("cr", "11")) player.cr.points = player.cr.points.add(tmp.cr.effect.times(diff));
+        if (hasUpgrade("cr", "11")) player.cr.points = player.cr.points.add(tmp.cr.generationQuantity.times(diff));
     },
     effect(){
-        let effect = new Decimal(0)
-        if(hasUpgrade("cr", 11)) effect = new Decimal(0.5)
-        if(hasUpgrade("cr", 12)) effect = new Decimal(1)
-        if(hasUpgrade("cr", 13)) effect = new Decimal(5)
-        if(hasUpgrade("cr", 21)) effect = effect.times(upgradeEffect("cr", 21))
+        let effect = player.cr.points.root(5).log10().div(10).add(1)
+        if(effect.gte(2)) effect = 2
         return effect
+    },
+
+    generationQuantity(){
+        let generation = new Decimal(0)
+        if(hasUpgrade("cr", 11)) generation = new Decimal(0.5)
+        if(hasUpgrade("cr", 12)) generation = new Decimal(1)
+        if(hasUpgrade("cr", 13)) generation = new Decimal(5)
+        if(hasUpgrade("cr", 21)) generation = generation.times(upgradeEffect("cr", 21))
+
+        return !hasUpgrade("cr", 13) ? generation : generation.pow(tmp.cr.effect)
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
@@ -178,11 +187,11 @@ addLayer("cr",{
                 return divider
             },
             progress() {
-                let divider = tmp.cr.bars.progBar.divider
-                let progress = player.cr.points.div(divider)
-                if(progress.lte(1) && divider.eq(1.38e30)) progress = player.cr.points.div(divider)
-                if(progress.gte(1) && divider.eq(1500)) progress = player.cr.points.div(divider)
-                if(progress.lte(1) && divider.eq(1500)) progress = player.cr.points.div(divider)
+                let divide = tmp.cr.bars.progBar.divider
+                let progress = player.cr.points.div(divide)
+                if(progress.lte(1) && divide.eq(1.38e30)) progress = player.cr.points.div(divide)
+                if(progress.gte(1) && divide.eq(1500)) progress = player.cr.points.div(divide)
+                if(progress.lte(1) && divide.eq(1500)) progress = player.cr.points.div(divide)
                 return progress
             },
             display() {
