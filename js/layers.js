@@ -119,11 +119,13 @@ addLayer("cr",{
 	
         return mult
     },
-    tabFormat: ["main-display",
+    tabFormat: [["display-text",
+    function() {return `<h2 style=color:#FFD700;><b>You have ` + format(player.cr.points) + ` creation points.`},],
+    "blank",
     ["display-text",
-    function() {return 'You are generating ' + format(tmp.cr.generationQuantity) + '/s creation points.'},],
+    function() {return `<h3 style=color:#FFD700><b>You are generating ` + format(tmp.cr.generationQuantity) + `/s creation points.`},],
     ["display-text",
-    function() {return 'All currencies are raised to the ' + format(tmp.cr.effect) + ' power'},],
+    function() {return `<h3 style=color:#FFD700><b>All currencies are raised to the ` + format(tmp.cr.effect) + ` power`},],
     "blank",
     "upgrades",
     ["bar","progBar"],
