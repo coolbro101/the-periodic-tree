@@ -119,9 +119,13 @@ addLayer("cr",{
 	
         return mult
     },
-    tabFormat: ["main-display",
+    tabFormat: [["display-text",
+    function() {return `<h2 style=color:#FFD700;><b>You have ` + format(player.cr.points) + ` creation points.`},],
+    "blank",
     ["display-text",
-    function() {return 'You are generating ' + format(tmp.cr.effect) + '/s creation points.'},],
+    function() {return `<h3 style=color:#FFD700><b>You are generating ` + format(tmp.cr.generationQuantity) + `/s creation points.`},],
+    ["display-text",
+    function() {return `<h3 style=color:#FFD700><b>All currencies are raised to the ` + format(tmp.cr.effect) + ` power`},],
     "blank",
     "upgrades",
     ["bar","progBar"],
@@ -135,15 +139,22 @@ addLayer("cr",{
     ],
 
     update(diff) {
-        if (hasUpgrade("cr", "11")) player.cr.points = player.cr.points.add(tmp.cr.effect.times(diff));
+        if (hasUpgrade("cr", "11")) player.cr.points = player.cr.points.add(tmp.cr.generationQuantity.times(diff));
     },
     effect(){
-        let effect = new Decimal(0)
-        if(hasUpgrade("cr", 11)) effect = new Decimal(200)
-        if(hasUpgrade("cr", 12)) effect = new Decimal(1)
-        if(hasUpgrade("cr", 13)) effect = new Decimal(10000000)
-        if(hasUpgrade("cr", 21)) effect = effect.times(upgradeEffect("cr", 21))
+        let effect = player.cr.points.root(5).log10().div(10).add(1)
+        if(effect.gte(2)) effect = 2
         return effect
+    },
+
+    generationQuantity(){
+        let generation = new Decimal(0)
+        if(hasUpgrade("cr", 11)) generation = new Decimal(0.5)
+        if(hasUpgrade("cr", 12)) generation = new Decimal(1)
+        if(hasUpgrade("cr", 13)) generation = new Decimal(5)
+        if(hasUpgrade("cr", 21)) generation = generation.times(upgradeEffect("cr", 21))
+
+        return !hasUpgrade("cr", 13) ? generation : generation.pow(tmp.cr.effect)
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
@@ -178,11 +189,11 @@ addLayer("cr",{
                 return divider
             },
             progress() {
-                let divider = tmp.cr.bars.progBar.divider
-                let progress = player.cr.points.div(divider)
-                if(progress.lte(1) && divider.eq(1.38e30)) progress = player.cr.points.div(divider)
-                if(progress.gte(1) && divider.eq(1500)) progress = player.cr.points.div(divider)
-                if(progress.lte(1) && divider.eq(1500)) progress = player.cr.points.div(divider)
+                let divide = tmp.cr.bars.progBar.divider
+                let progress = player.cr.points.div(divide)
+                if(progress.lte(1) && divide.eq(1.38e30)) progress = player.cr.points.div(divide)
+                if(progress.gte(1) && divide.eq(1500)) progress = player.cr.points.div(divide)
+                if(progress.lte(1) && divide.eq(1500)) progress = player.cr.points.div(divide)
                 return progress
             },
             display() {
@@ -326,6 +337,24 @@ addLayer("h", {
         let keep = [];
         if (layers[resettingLayer].row > this.row) layerDataReset("h", keep)
     },
+    tabFormat: ["main-display",
+    "prestige-button",
+    "blank",
+    "upgrades",
+    "blank",
+    "blank",
+    ["infobox", "lore2"],
+    ],
+    infoboxes: {
+        lore2: {
+            title: "Lore",
+            body() { return `Ah! Now that you have broken the timewall, you unlocked hydrogen 
+            which is the first element in your marvelous elemental journey! 
+            Hydrogen is a very important element. It is one of the elements that 
+            creates water along with oxygen! Therefore, you must accumulate as much hydrogen as
+             you can to go on to the next layer! Good luck!`},
+       },
+    },
     upgrades: {
         11:{
             title: "Atom Generator",
@@ -357,7 +386,7 @@ addLayer("h", {
             description: "Atoms boost hydrogen",
             cost: new Decimal(20),
             effect() {
-                let effect = new Decimal(1).add(player.points.log10())
+                let effect = new Decimal(1).add(player.points.add(1).log10())
                 return effect
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
