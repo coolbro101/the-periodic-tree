@@ -5,8 +5,8 @@ let modInfo = {
 	pointsName: "atoms",
 	modFiles: ["layers.js", "tree.js"],
 
-	discordName: "",
-	discordLink: "",
+	discordName: "The Periodic Tree Discord",
+	discordLink: "https://discord.gg/GTYKWmcq",
 	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }

@@ -47,7 +47,7 @@ addLayer("a",{
             image: "https://th.bing.com/th/id/OIP.5iyUUKSTmL-taBas--_oMAAAAA?w=156&h=180&c=7&r=0&o=5&pid=1.7"
         },
         14:{
-            name: "Wow you're really still playing?",
+            name: "Wow, you're really still playing?",
             tooltip: "Have 100 total hydrogen",
             unlocked() {return hasAchievement('a', 13)},
             done() {return player.h.total.gte(100)},
@@ -208,7 +208,7 @@ addLayer("cr",{
             not care what you believe in, or what religion you are, but all of 
             them have a starting point of the world being created. In this case, 
             The Big Bang will be what we will refer to since most people accept 
-            that as a possible source of creation. The Big Bang happened around
+            that as a possible source of creation. The Big Bang was said to have happened around
              13.8 billion years ago. Good Luck! Have fun with the time walls!`},
        },
     },
@@ -265,7 +265,7 @@ addLayer("cr",{
             effectDisplay() { return '+' + format(upgradeEffect(this.layer, this.id))},
         },
         31:{
-            title: "Placeholder",
+            title: "ur mom",
             description: "Placeholder text",
             cost: new Decimal(1e12),
             unlocked(){
