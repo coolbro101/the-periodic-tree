@@ -277,7 +277,7 @@ addLayer("cr",{
         },
         31:{
             title: "ur mom",
-            description: "Placeholder text",
+            description: "joe mama",
             cost: new Decimal(1e12),
             unlocked(){
                 let status = false
@@ -323,6 +323,8 @@ addLayer("h", {
     directMult(){ //Directly multiplies the resource gain of that layer
         let multiplier = new Decimal(1);
         if (hasUpgrade('h', 21)) multiplier = multiplier.times(upgradeEffect('h', 21))
+        if(hasUpgrade('he', 11)) multiplier = multiplier.times(3);
+        if(hasUpgrade('l', 11)) multiplier = multiplier.times(upgradeEffect('l', 11));
         return multiplier
     },
     hotkeys: [
@@ -332,11 +334,14 @@ addLayer("h", {
         let show = false
         if (hasUpgrade("cr", "14")) show = true
         return show
-    },
+    },	
     doReset(resettingLayer) {
         let keep = [];
+        if (hasMilestone("he", 0) && resettingLayer=="he") keep.push("upgrades")
+        if (hasMilestone("l", 0) && resettingLayer=="l") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset("h", keep)
     },
+
     tabFormat: ["main-display",
     "prestige-button",
     "blank",
@@ -376,6 +381,7 @@ addLayer("h", {
               let effect = new Decimal(1)
               if(hasUpgrade("h", 13)) effect = effect.add(player.h.best.log10().div(10).pow(0.3))
                 if (hasUpgrade('h', 32)) effect = effect.pow(1.5)
+                if (hasUpgrade('he', 12)) effect = effect.times(1.25)
                 return effect;
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
@@ -425,3 +431,258 @@ addLayer("h", {
         },
     },
 })
+addLayer("he", {
+    name: "helium",
+    symbol() {
+    return `
+    <p>HE
+    <p class='cBreak' style='font-size:16px'>2 | 4.002</p>
+    </p>`
+  },
+
+    row: 4,
+    position: 0,
+startData() {return{
+    unlocked: false,
+    points: new Decimal(0),
+    total:new Decimal(0),
+    best: new Decimal(0)
+}},
+
+    color: "#0BE0CE",
+    requires(){
+        let cost = new Decimal(3).pow(player.he.points.add(1)).times(200)
+        if(player.l.unlocked) cost = new Decimal(1e6)
+        if(player.l.unlocked && player.he.unlocked) cost = (new Decimal(3).pow(player.he.points)).times(200)
+        return cost
+        },
+    resource: "helium",
+    baseResource: "atoms",
+    baseAmount() {return player.points},
+    type: "static",
+	branches:["h"],
+    exponent: 1,    
+    effect(){
+        let effect = (new Decimal(2).pow(player.he.points))
+	    if(hasUpgrade('he', 21)) effect = effect.pow(1.1);
+        return effect
+    },
+    effectDescription() { return "Helium gives a " + format(tmp.he.effect) + "x bonus towards atoms"},
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },    
+    canBuyMax() { return hasMilestone("he", 1) },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    hotkeys: [
+        {key: "H", description: "Shift+H: Reset for helium atoms", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){
+        let show = false
+        if(player.h.unlocked) show = true
+        return show
+    },
+    milestones: {
+			0: {
+				requirementDescription: "8 Helium",
+				done() { return player.he.best.gte(8)},
+				effectDescription: "Keep Hydrogen Upgrades on reset.",
+			},
+			1: {
+				requirementDescription: "15 Helium",
+				done() { return player.he.best.gte(15)},
+				effectDescription: "You can buy max Helium.",
+			},
+		},
+    canBuyMax() { return hasMilestone("he", 1) },
+    upgrades: {
+        11:{
+            title: "Balloon Power",
+            description: "Helium triples hydrogen gain!",
+            cost: new Decimal(2)
+           
+        },
+        12:{
+            title: "Helium Bonds",
+            description: 'Helium boosts the effects of the <b>Synergetic Hydrogen</b> upgrade!',
+            cost: new Decimal(4),
+            unlocked() { return hasUpgrade("he", 11) },
+        },
+        13:{
+            title: "Synergetic Helium",
+            description: "Beset helium boosts atoms",
+            cost: new Decimal(7),
+            unlocked() { return hasUpgrade("he", 12) },
+            effect() {
+                let effect = player.l.best.add(1).pow(0.4)
+                return effect
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
+        },
+        21:{
+            title: "Helium Bonus I",
+            description: "Increases helium bonus",
+            cost: new Decimal(5),
+            unlocked() { return hasUpgrade("he", 13) },
+        },
+    }
+})
+addLayer("l", {
+    name: "lithium",
+    symbol() {
+        return `
+        <p>L
+        <p class='cBreak' style='font-size:16px'>3 | 6.941</p>
+        </p>`
+      },
+
+    row: 4,
+    position: 1,
+    startData() {return{
+        unlocked: false,
+        points: new Decimal(0),
+        total:new Decimal(0),
+        best: new Decimal(0),
+        charge: new Decimal(0),
+        unlockOrder: ["h"],
+    }},
+
+    color: "green",
+    requires(){
+        let cost = (new Decimal(3).pow(player.l.points.add(1))).times(200)
+        if(player.he.unlocked) cost = new Decimal(1e6)
+        if(player.he.unlocked && player.l.unlocked) cost = (new Decimal(3).pow(player.l.points.add(1))).times(200)
+        return cost
+        },
+    resource: "lithium",
+    baseResource: "atoms",
+    baseAmount() {return player.points},
+    type: "static",
+    branches: ["h", "he"],
+    exponent: 1, 
+    update(diff) {
+        if (player.l.unlocked) player.l.charge = player.l.charge.add(tmp.l.effect.times(diff));
+    },
+    effect(){
+        let effect = new Decimal(1)
+        if(player.l.unlocked) effect = new Decimal(1).times(player.l.points)
+        if(hasUpgrade("l", 12)) effect = effect.add(upgradeEffect("l", 12).times(player.l.points))
+        return effect
+    },
+    chargeExp() {
+        let exp = new Decimal(1/3)
+        if(hasUpgrade('l', 21)) exp = new Decimal(0.45)
+        return exp
+    },
+    chargeEff() {
+        if (!player.l.unlocked) return new Decimal(1);
+        return new Decimal(player.l.charge).add(1).pow(this.chargeExp());
+    },
+    effectDescription() { return " which generates " + format(tmp.l.effect) + " charge a second"},
+
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    tabFormat: ["main-display",
+    "prestige-button",
+    "blank",
+    ["display-text",
+        function() {return 'You have ' + format(player.l.charge) + ' Lithium Charge which boosts atoms by ' + format(tmp.l.chargeEff) + 'x.'},
+            {}],
+    "blank",
+    ["display-text",
+    function() {return 'Your best lithium is ' + player.l.best + '<br> You have made a total of ' + player.l.total + ' lithium'},
+    {}]
+    ,
+    "milestones", "blank", "blank", "upgrades"],
+    layerShown(){
+        let show = false
+        if(player.h.unlocked) show = true
+        return show
+    },
+    doReset(resettingLayer){
+        player.l.charge = new Decimal(0)
+    },
+    hotkeys: [
+        {key: "l", description: "l: Reset for lithium atoms", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+
+    canBuyMax() { return hasMilestone("l", 1) },
+    milestones: {
+        0: {
+            requirementDescription: "8 Lithium",
+            done() { return player.l.best.gte(8)},
+            effectDescription: "Keep Hydrogen Upgrades on reset.",
+        },
+        1: {
+            requirementDescription: "15 Lithium",
+            done() { return player.l.best.gte(15)},
+            effectDescription: "You can buy max Helium.",
+        },
+    },
+    upgrades:{
+        11: {
+            title: "Charged Up",
+            description: "Best Hydrogen gain boosts hydrogen gain",
+            cost: new Decimal(1),
+            effect(){
+                let effect = player.h.best.log10().add(1)
+                if(player.h.points.lte(1)) effect = 1
+                return effect
+            },
+
+            effectDisplay() { return 'x'+ format(upgradeEffect(this.layer, this.id)) },
+        },
+        12: {
+            title: "Power",
+            description: "Best lithium adds to the base charge gain.",
+            cost: new Decimal(4),
+            effect() {
+                let effect = player.l.best.pow(0.3).sub(1)
+                return effect
+            },
+            effectDisplay() { return '+'+ format(upgradeEffect(this.layer, this.id)) },
+
+            unlocked(){return hasUpgrade("l", 11)}
+            },
+        13:{
+            title: "Chez",
+            description: "idk",
+            cost: new Decimal(7),
+
+            unlocked(){return hasUpgrade("l", 12)}
+        },
+        21: {
+            title: "Better boost",
+            description: "The formula for the charge atom gain is better. (x+1)^1/3 --> (x+1)^0.45",
+            cost: new Decimal(10),
+
+            unlocked(){return hasUpgrade("l", 13)}
+        },
+        22: {
+            title: "Even more benefits!",
+            description: "Charge boosts hydrogen gain",
+            cost: new Decimal(25),
+
+            unlocked(){return hasMilestone("l", 11)}
+        },
+        23: {
+            title: "We love global freezing!",
+            description: "freeze the entire earth for the cheap price of your sanity",
+            cost: new Decimal(9999999),
+
+            unlocked(){return player.l.points.gt(50)}
+        },
+        31: {
+            title: "",
+            description: "Helium boosts Lithium gain"
+        }
+        },
+    })
