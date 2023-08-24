@@ -340,6 +340,7 @@ addLayer("h", {
         if (hasMilestone("he", 0) && resettingLayer=="he") keep.push("upgrades")
         if (hasMilestone("l", 0) && resettingLayer=="l") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset("h", keep)
+        if (layers[resettingLayer].row > this.row) player.points = new Decimal(10)
     },
 
     tabFormat: ["main-display",
