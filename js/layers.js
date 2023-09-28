@@ -270,7 +270,7 @@ addLayer("cr",{
                 return hasAchievement("a", 13)
             },
             effect(){
-                let effect = ((player.cr.points.log10()).div(100)).pow(0.3)
+                let effect = ((player.cr.points.log10()).div(100)).pow(0.4)
                 return effect
             },
             effectDisplay() { return '+' + format(upgradeEffect(this.layer, this.id))},
@@ -311,7 +311,7 @@ addLayer("h", {
     baseResource: "atoms", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 1, // Prestige currency exponent
+    exponent: 0.75, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses. Edit by King_B3H: Can reduce the cost or increase cost
         let mult = new Decimal(1);
         return mult
@@ -320,7 +320,7 @@ addLayer("h", {
         let exp = new Decimal(1)
         return exp;
     },
-    directMult(){ //Directly multiplies the resource gain of that layer
+    directMult(f){ //Directly multiplies the resource gain of that layer
         let multiplier = new Decimal(1);
         if (hasUpgrade('h', 21)) multiplier = multiplier.times(upgradeEffect('h', 21))
         if(hasUpgrade('he', 11)) multiplier = multiplier.times(3);
@@ -345,6 +345,11 @@ addLayer("h", {
 
     tabFormat: ["main-display",
     "prestige-button",
+    "blank",
+    ["display-text",
+    function() {return `Your best hydrogen is ` + format(player.h.best)+ `.`},],
+    ["display-text",
+    function() {return `Your total hydrogen is ` + format(player.h.total)+ `.`},],
     "blank",
     "upgrades",
     "blank",
@@ -380,8 +385,8 @@ addLayer("h", {
             cost: new Decimal(5),
             effect() {
               let effect = new Decimal(1)
-              if(hasUpgrade("h", 13)) effect = effect.add(player.h.best.log10().div(10).pow(0.3))
-                if (hasUpgrade('h', 32)) effect = effect.pow(1.5)
+              if(hasUpgrade("h", 13)) effect = effect.add(player.h.best.log(5).div(10).pow(0.3))
+                if (hasUpgrade('h', 31)) effect = effect.pow(1.5)
                 if (hasUpgrade('he', 12)) effect = effect.times(1.25)
                 return effect;
             },
@@ -393,7 +398,7 @@ addLayer("h", {
             description: "Atoms boost hydrogen",
             cost: new Decimal(20),
             effect() {
-                let effect = new Decimal(1).add(player.points.add(1).log10())
+                let effect = new Decimal(1).add(player.points.add(1).log10().pow(0.5).div(5))
                 return effect
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
@@ -454,17 +459,17 @@ startData() {return{
     requires(){
         let cost = new Decimal(3).pow(player.he.points.add(1)).times(200)
         if(player.l.unlocked) cost = new Decimal(1e6)
-        if(player.l.unlocked && player.he.unlocked) cost = (new Decimal(3).pow(player.he.points)).times(200)
-        return cost
+        if(player.l.unlocked && player.he.unlocked) cost = (new Decimal(3).pow(player.he.points.add(1))).times(200)
+        return cost 
         },
     resource: "helium",
     baseResource: "atoms",
     baseAmount() {return player.points},
     type: "static",
 	branches:["h"],
-    exponent: 1,    
+    exponent: 0,    
     effect(){
-        let effect = (new Decimal(2).pow(player.he.points))
+        let effect = ((new Decimal(2).add(upgradeEffect('cr', 22))).pow(player.he.points))
 	    if(hasUpgrade('he', 21)) effect = effect.pow(1.1);
         return effect
     },
@@ -503,7 +508,7 @@ startData() {return{
         11:{
             title: "Balloon Power",
             description: "Helium triples hydrogen gain!",
-            cost: new Decimal(2)
+            cost: new Decimal(1)
            
         },
         12:{
@@ -527,7 +532,7 @@ startData() {return{
             title: "Helium Bonus I",
             description: "Increases helium bonus",
             cost: new Decimal(5),
-            unlocked() { return hasUpgrade("he", 13) },
+            unlocked() { return hasUpgrade("he", 12) },
         },
     }
 })
@@ -553,9 +558,10 @@ addLayer("l", {
 
     color: "green",
     requires(){
-        let cost = (new Decimal(3).pow(player.l.points.add(1))).times(200)
+        let exponent = player.l.points.add(1)
+        let cost = (new Decimal(3).pow(exponent)).times(200)
         if(player.he.unlocked) cost = new Decimal(1e6)
-        if(player.he.unlocked && player.l.unlocked) cost = (new Decimal(3).pow(player.l.points.add(1))).times(200)
+        if(player.he.unlocked && player.l.unlocked) cost = (new Decimal(3).pow(exponent)).times(200)
         return cost
         },
     resource: "lithium",
@@ -570,6 +576,7 @@ addLayer("l", {
     effect(){
         let effect = new Decimal(1)
         if(player.l.unlocked) effect = new Decimal(1).times(player.l.points)
+        if(hasUpgrade("cr", 22)) effect = effect.add(upgradeEffect("cr", 22).times(player.l.points))
         if(hasUpgrade("l", 12)) effect = effect.add(upgradeEffect("l", 12).times(player.l.points))
         return effect
     },
