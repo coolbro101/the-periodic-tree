@@ -291,8 +291,8 @@ addLayer("cr",{
             effectDisplay() { return '+' + format(upgradeEffect(this.layer, this.id))},
         },
         31:{
-            title: "ur mom",
-            description: "joe mama",
+            title: "Hi",
+            description: "We are infinite lore which you will never find out the true meaning",
             cost: new Decimal(1e12),
             unlocked(){
                 let status = false
