@@ -58,12 +58,11 @@ addLayer("a",{
               },  
             image: "https://th.bing.com/th/id/OIP.JwrL266NzPtHWrCn4dxmAwHaIN?w=179&h=199&c=7&r=0&o=5&pid=1.7"
         },
-        /*
-        14:{
+        15:{
             name: "Moving on",
-            tooltip: "Do your first row 2 reset. Reward: Unlock more hydrogen upgrades",
+            tooltip: "Do your first Helium. Reward: Unlock more hydrogen upgrades",
             unlocked(){return hasAchievement('a', 13)},
-            done() {return player.he.total.gt(0) || player.l.total.gt(0)},
+            done() {return player.he.total.gt(0)},
             style() {
                 return hasAchievement(this.layer, this.id) ? "" : {
                   backgroundImage: ""
@@ -71,6 +70,7 @@ addLayer("a",{
               },
             image: "https://th.bing.com/th/id/OIP.JA8mkwas7jiV-oYo3YuTLAHaE8?w=256&h=180&c=7&r=0&o=5&pid=1.7"
         },
+        /*
         15:{
             name: "Both",
             tooltip: "Do both a lithium and helium reset",
@@ -119,39 +119,92 @@ addLayer("cr",{
 	
         return mult
     },
-    tabFormat: [["display-text",
-    function() {return `<h2 style=color:#FFD700;><b>You have ` + format(player.cr.points) + ` creation points.`},],
-    "blank",
-    ["display-text",
-    function() {return `<h3 style=color:#FFD700><b>You are generating ` + format(tmp.cr.generationQuantity) + `/s creation points.`},],
-    ["display-text",
-    function() {return `<h3 style=color:#FFD700><b>All currencies are raised to the ` + format(tmp.cr.effect) + ` power`},],
-    "blank",
-    "upgrades",
-    ["bar","progBar"],
-    "blank",
-    "blank",
-    ["infobox", "lore1"],
-    "blank",
-    "blank",
-    ["display-text",
-    function() {return '<h3><b> Note: Creation Upgrades are meant to be slow. <b></h3>'}]
-    ],
+
+    bars: {
+        progBar: {
+
+            direction: RIGHT,
+
+            width: 400,
+            height: 100,
+            fillStyle: {'background-color' : "#FFD700"},
+            baseStyle: {'background-color' : "#696969"},
+            borderStyle: {'border-width' : "10px"},
+            textStyle: {'color': '#000000'},
+            divider(){
+                let divider = new Decimal(1500)
+                if(player.cr.total.gte(1500)) divider = new Decimal(1.38e30)
+                return divider
+            },
+            progress() {
+                let divide = tmp.cr.bars.progBar.divider
+                let progress = player.cr.points.div(divide)
+                if(progress.lte(1) && divide.eq(1.38e30)) progress = player.cr.total.div(divide)
+                if(progress.gte(1) && divide.eq(1500)) progress = player.cr.total.div(divide)
+                if(progress.lte(1) && divide.eq(1500)) progress = player.cr.total.div(divide)
+                return progress
+            },
+            display() {
+                let display = format(player.cr.total) + ' / ' + format(tmp.cr.bars.progBar.divider) + 	'<br><p>Unlocks 1 Major Upgrade<p>'
+                return display
+            },
+            unlocked(){
+                let status = true
+                if(hasUpgrade("cr", 31)) status = false
+                return status
+            }
+        },
+    }, 
+    tabFormat: {
+     "Point Boost Upgrades": {
+        content:[ 
+            ["display-text",
+            function() {return `<h2 style=color:#FFD700;><b>You have ` + format(player.cr.points) + ` Creation points.</b>`},],
+            ["display-text",
+            function() {return `<h2 style=color:#FFD700;font-size:18px><b>You have ` + format(player.cr.total) + ` total Creation points.</b>`},],
+            "blank",
+            ["display-text",
+            function() {return `<h3 style=color:#FFD700>You are generating ` + format(tmp.cr.generationQuantity) + `/s Creation points.`},],
+            ["display-text",
+            function() {return `<h3 style=color:#FFD700>All currencies are raised to the ` + format(tmp.cr.effect) + ` power<br><p style="font-size:15px">(This is due to total Creation points)`},],
+            "blank",
+            "upgrades",
+            ["bar","progBar"],
+            "blank",
+            "blank",
+            ["infobox", "lore1"],
+            "blank",
+            "blank",
+            ["display-text",
+            function() {return '<h3><b> Note: Creation Upgrades are meant to be slow. <b></h3>'}]
+            ]},
+    "Feature Upgrades" : {
+        content:[
+            ["display-text",
+            function() {return `<h2 style=color:#FFD700;><b>This is for testing purposes.<br>Nothing yet to see here :)</b>`},],
+        ],
+        unlocked(){
+            return (tmp.cr.bars.progBar.progress.neq(player.cr.total.div(1500)))
+        },
+        
+    }},
 
     update(diff) {
         if (hasUpgrade("cr", "11")) player.cr.points = player.cr.points.add(tmp.cr.generationQuantity.times(diff));
+        if (hasUpgrade("cr", "11")) player.cr.total = player.cr.total.add(tmp.cr.generationQuantity.times(diff));
     },
     effect(){
-        let effect = player.cr.points.root(5).log10().div(10).add(1)
+        let effect = player.cr.total.root(4).log10().div(10).add(1)
         if(effect.gte(2)) effect = 2
         return effect
     },
 
     generationQuantity(){
         let generation = new Decimal(0)
-        if(hasUpgrade("cr", 11)) generation = new Decimal(0.5)
+        if(hasUpgrade("cr", 11)) generation = new Decimal(500)
         if(hasUpgrade("cr", 12)) generation = new Decimal(1)
         if(hasUpgrade("cr", 13)) generation = new Decimal(5)
+        if(hasUpgrade("cr", 14)) generation = new Decimal(15)
         if(hasUpgrade("cr", 21)) generation = generation.times(upgradeEffect("cr", 21))
 
         return !hasUpgrade("cr", 13) ? generation : generation.pow(tmp.cr.effect)
@@ -169,44 +222,6 @@ addLayer("cr",{
         if (resettingLayer) keep.push("upgrades")
         if (resttingLayer) layerDataReset("h", keep)
     },
-    bars: {
-        progBar: {
-
-            direction: RIGHT,
-
-            width: 400,
-            height: 100,
-            fillStyle: {'background-color' : "#FFD700"},
-            baseStyle: {'background-color' : "#696969"},
-            borderStyle: {'border-width' : "10px"},
-            textStyle: {'color': '#000000'},
-            divider(){
-                let divider = new Decimal(1500)
-                if(player.cr.points.gte(1500)) divider = new Decimal(1.38e30)
-                if(player.cr.points.lt(1500) && hasUpgrade("cr", 14)) divider = new Decimal(1.38e30)
-                if(player.cr.points.gte(1.38e130)) divider = 1
-                if(player.cr.points.lt(1.38e30) && hasUpgrade("cr", 31)) divider = 1
-                return divider
-            },
-            progress() {
-                let divide = tmp.cr.bars.progBar.divider
-                let progress = player.cr.points.div(divide)
-                if(progress.lte(1) && divide.eq(1.38e30)) progress = player.cr.points.div(divide)
-                if(progress.gte(1) && divide.eq(1500)) progress = player.cr.points.div(divide)
-                if(progress.lte(1) && divide.eq(1500)) progress = player.cr.points.div(divide)
-                return progress
-            },
-            display() {
-                let display = format(player.cr.points) + ' / ' + format(tmp.cr.bars.progBar.divider) + 	'<br><p>Unlocks 1 Major Upgrade<p>'
-                return display
-            },
-            unlocked(){
-                let status = true
-                if(hasUpgrade("cr", 31)) status = false
-                return status
-            }
-        },
-    }, 
     infoboxes: {
         lore1: {
             title: "Lore",
@@ -226,38 +241,38 @@ addLayer("cr",{
     upgrades: {
         11: {
             title: "A Start",
-            description: "Generate 0.5 creator points per second",
+            description: "Generate 0.5 Creation points per second.",
             cost: new Decimal(0),
         },
         12: {
             title: "Get Timewalled",
-            description: "This will take a while. Increase CR generation to 1 per second.",
+            description: "This will take a while. Increase Creation point generation to 1 per second.",
             cost: new Decimal(50)
         },
         13: {
             title: "This Is Meant To Be Slow",
-            description: "You might grow a year older while waiting for this upgrade! Increase CR generation to 5 a second.",
+            description: "You might grow a year older while waiting for this upgrade! Increase Creation point generation to 5 a second.",
             cost: new Decimal(200)
         },
         14: {
             title: "Beginnings",
-            description: "Unlocks a new layer",
+            description: `Unlocks a new layer<br>Base Creation point generation equals 15`,
             cost: new Decimal(1500),
             unlocked(){
                 let status = false
-                if(tmp.cr.bars.progBar.progress.gte(1) || hasUpgrade("cr", "14") || tmp.cr.bars.progBar.progress.neq(player.cr.points.div(1500))) status = true
+                if(tmp.cr.bars.progBar.progress.gte(1) || hasUpgrade("cr", "14") || tmp.cr.bars.progBar.progress.neq(player.cr.total.div(1500))) status = true
                 return status
             },
         },
         21: {
             title: "Gaining Traction",
-            description: "Creation Point Generation is boosted exponentially by your total hydrogen.",
+            description: "Creation Point Generation is boosted exponentially by your total Creation points.",
             cost: new Decimal(10000),
             unlocked(){
                 return hasAchievement("a", 13)
             },
             effect(){
-                let effect = player.h.total.pow(0.25).add(1)
+                let effect = player.cr.total.log(10).div(10).pow(0.98).add(1)
                 return effect
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
@@ -265,7 +280,7 @@ addLayer("cr",{
         22:{
             title: "Creative Synergy",
             description: "Creation Points will add to the lithium and helium effect bases.",
-            cost: new Decimal(1000000000),
+            cost: new Decimal(1000000),
             unlocked(){
                 return hasAchievement("a", 13)
             },
@@ -322,10 +337,10 @@ addLayer("h", {
     },
     directMult(f){ //Directly multiplies the resource gain of that layer
         let multiplier = new Decimal(1);
-        if (hasUpgrade('h', 21)) multiplier = multiplier.times(upgradeEffect('h', 21))
+        if(hasUpgrade('h', 21)) multiplier = multiplier.times(upgradeEffect('h', 21))
         if(hasUpgrade('he', 11)) multiplier = multiplier.times(3);
         if(hasUpgrade('l', 11)) multiplier = multiplier.times(upgradeEffect('l', 11));
-        return multiplier
+        return multiplier = multiplier.pow(tmp.cr.effect)
     },
     hotkeys: [
         {key: "h", description: "H: Reset for hydrogen atoms", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -348,6 +363,8 @@ addLayer("h", {
     "blank",
     ["display-text",
     function() {return `Your best hydrogen is ` + format(player.h.best)+ `.`},],
+    ["display-text",
+    function() {return `<p style='font-size:8px;padding:3px;'><b>(Based on best hydrogen before buying upgrade).<b><p>`},],
     ["display-text",
     function() {return `Your total hydrogen is ` + format(player.h.total)+ `.`},],
     "blank",
@@ -433,7 +450,7 @@ addLayer("h", {
           title: "Even more synergy!!",
             description: 'The effect of <b>Synergetic Hydrogen</b> is raised to the 1.5',
             cost: new Decimal(1000),
-            unlocked() {return hasAchievement('a', 14) && hasUpgrade("h", 23)}
+            unlocked() {return hasAchievement('a', 15) && hasUpgrade("h", 23)}
         },
     },
 })
@@ -457,19 +474,17 @@ startData() {return{
 
     color: "#0BE0CE",
     requires(){
-        let cost = new Decimal(3).pow(player.he.points.add(1)).times(200)
-        if(player.l.unlocked) cost = new Decimal(1e6)
-        if(player.l.unlocked && player.he.unlocked) cost = (new Decimal(3).pow(player.he.points.add(1))).times(200)
-        return cost 
+        return new Decimal(600).times(4)
         },
     resource: "helium",
     baseResource: "atoms",
     baseAmount() {return player.points},
     type: "static",
 	branches:["h"],
-    exponent: 0,    
+    exponent: 1,    
     effect(){
-        let effect = ((new Decimal(2).add(upgradeEffect('cr', 22))).pow(player.he.points))
+        let effect = new Decimal(2).pow(player.he.points)
+        if(hasUpgrade('cr',22)) effect = (new Decimal(2).add(upgradeEffect("cr", 22))).pow(player.he.points)
 	    if(hasUpgrade('he', 21)) effect = effect.pow(1.1);
         return effect
     },
@@ -503,7 +518,6 @@ startData() {return{
 				effectDescription: "You can buy max Helium.",
 			},
 		},
-    canBuyMax() { return hasMilestone("he", 1) },
     upgrades: {
         11:{
             title: "Balloon Power",
@@ -545,7 +559,7 @@ addLayer("l", {
         </p>`
       },
 
-    row: 4,
+    row: 5,
     position: 1,
     startData() {return{
         unlocked: false,
@@ -553,15 +567,14 @@ addLayer("l", {
         total:new Decimal(0),
         best: new Decimal(0),
         charge: new Decimal(0),
-        unlockOrder: ["h"],
+        unlockOrder: ["h", "he"],
     }},
 
     color: "green",
     requires(){
         let exponent = player.l.points.add(1)
-        let cost = (new Decimal(3).pow(exponent)).times(200)
-        if(player.he.unlocked) cost = new Decimal(1e6)
-        if(player.he.unlocked && player.l.unlocked) cost = (new Decimal(3).pow(exponent)).times(200)
+        let cost = new Decimal(1000000000)
+        if(player.l.unlocked) cost = (new Decimal(3).pow(exponent)).times(1000)
         return cost
         },
     resource: "lithium",
@@ -612,7 +625,9 @@ addLayer("l", {
     "milestones", "blank", "blank", "upgrades"],
     layerShown(){
         let show = false
-        if(player.h.unlocked) show = true
+        let status = false
+        if(player.he.upgrades.length>=1) status = true
+        if(player.he.unlocked) show = true
         return show
     },
     doReset(resettingLayer){
