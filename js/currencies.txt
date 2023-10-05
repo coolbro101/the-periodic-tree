@@ -1,0 +1,13 @@
+Currencies Effected:
+    Creation Point Generation
+    Hydrogen
+    Lithium Charge
+
+Currencies Unaffected:
+    Atoms
+    Lithium
+    Helium
+
+Bonuses not boosted
+
+Updated to Version 1.0
