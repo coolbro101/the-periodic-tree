@@ -291,8 +291,8 @@ addLayer("cr",{
             effectDisplay() { return '+' + format(upgradeEffect(this.layer, this.id))},
         },
         31:{
-            title: "Hi",
-            description: "We are infinite lore which you will never find out the true meaning",
+            title: "ur mom",
+            description: "joe mama",
             cost: new Decimal(1e12),
             unlocked(){
                 let status = false
@@ -600,7 +600,7 @@ addLayer("l", {
     },
     chargeEff() {
         if (!player.l.unlocked) return new Decimal(1);
-        return new Decimal(player.l.charge).add(1).pow(this.chargeExp());
+        return new Decimal(player.l.charge).root(3).add(1).pow(this.chargeExp());
     },
     effectDescription() { return " which generates " + format(tmp.l.effect) + " charge a second"},
 
