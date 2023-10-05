@@ -55,7 +55,9 @@ function getPointGen() {
 			gain = gain.times(tmp.he.effect)
 		}
 		//Lithium
-		if(player.l.unlocked && player.l.charge.gt(0)) gain = gain.times(tmp.l.effect)
+		if(player.l.unlocked && player.l.charge.gt(0)){
+			gain = gain.times(tmp.l.chargeEff)
+		}
 	return gain
 }
 
