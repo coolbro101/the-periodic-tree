@@ -179,7 +179,7 @@ addLayer("cr",{
             ["display-text",
             function() {return '<h3><b> Note: Creation Upgrades are meant to be slow. <b></h3>'}],
             ["display-text",
-            function() {return '<h3><b> * = A list can be found here --> <b><a href="file:///home/chronos/u-fade6723eb8b64c205e08c74565fc1554f4de1d6/MyFiles/HTML%20and%20CSS/the-periodic-tree-master/js/currency-list.html" target="_blank" style=color:white;>Currency List</a></h3>'}]
+            function() {return '<h3><b> * = A list can be found here --> <b><a href="currency-list.html" target="_blank" style=color:white;>Currency List</a></h3>'}]
             ]},
     "Feature Upgrades" : {
         content:[
