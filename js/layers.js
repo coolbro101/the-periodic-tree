@@ -166,9 +166,10 @@ addLayer("cr",{
             ["display-text",
             function() {return `<h3 style=color:#FFD700>You are generating ` + format(tmp.cr.generationQuantity) + `/s Creation points.`},],
             ["display-text",
-            function() {return `<h3 style=color:#FFD700>All currencies are raised to the ` + format(tmp.cr.effect) + ` power<br><p style="font-size:15px">(This is due to total Creation points)`},],
+            function() {return `<h3 style=color:#FFD700>Currencies are raised to the ` + format(tmp.cr.effect) + ` power*<br><p style="font-size:15px">(This is due to total Creation points)`},],
             "blank",
-            "upgrades",
+            ["upgrades", "1"],
+            ["upgrades", "2"],
             ["bar","progBar"],
             "blank",
             "blank",
@@ -176,12 +177,15 @@ addLayer("cr",{
             "blank",
             "blank",
             ["display-text",
-            function() {return '<h3><b> Note: Creation Upgrades are meant to be slow. <b></h3>'}]
+            function() {return '<h3><b> Note: Creation Upgrades are meant to be slow. <b></h3>'}],
+            ["display-text",
+            function() {return '<h3><b> * = A list can be found here --> <b><a href="file:///home/chronos/u-fade6723eb8b64c205e08c74565fc1554f4de1d6/MyFiles/HTML%20and%20CSS/the-periodic-tree-master/js/currency-list.html" target="_blank" style=color:white;>Currency List</a></h3>'}]
             ]},
     "Feature Upgrades" : {
         content:[
             ["display-text",
             function() {return `<h2 style=color:#FFD700;><b>This is for testing purposes.<br>Nothing yet to see here :)</b>`},],
+            ["upgrade", "14"],
         ],
         unlocked(){
             return (tmp.cr.bars.progBar.progress.neq(player.cr.total.div(1500)))
@@ -398,11 +402,11 @@ addLayer("h", {
         },
         13: {
             title: "Synergetic Hydrogen",
-            description: "Best hydrogen boosts atom gain.",
-            cost: new Decimal(5),
+            description: "Total hydrogen boosts atom gain.",
+            cost: new Decimal(10),
             effect() {
               let effect = new Decimal(1)
-              if(hasUpgrade("h", 13)) effect = effect.add(player.h.best.log(5).div(10).pow(0.3))
+              if(hasUpgrade("h", 13)) effect = effect.add(player.h.total.log(10).div(10).pow(0.2))
                 if (hasUpgrade('h', 31)) effect = effect.pow(1.5)
                 if (hasUpgrade('he', 12)) effect = effect.times(1.25)
                 return effect;
@@ -413,7 +417,7 @@ addLayer("h", {
         21: {
             title: "More Hydrogen",
             description: "Atoms boost hydrogen",
-            cost: new Decimal(20),
+            cost: new Decimal(25),
             effect() {
                 let effect = new Decimal(1).add(player.points.add(1).log10().pow(0.5).div(5))
                 return effect
@@ -423,16 +427,16 @@ addLayer("h", {
         },
         22: {
             title: "Stronger Hydrogen II",
-            description: "Triples atom gain.",
+            description: "Doubles atom gain again.",
             cost: new Decimal(100),
             unlocked() { return hasUpgrade("h", 21) },
         },
         23: {
             title: "Atomical I",
             description: "Atoms boost atom gain",
-            cost: new Decimal(300),
+            cost: new Decimal(500),
             effect() {
-                let effect = player.points.pow(0.1)
+                let effect = player.points.log(10).pow(0.2)
                 if(player.points.lt(1)){
                     effect = new Decimal(1)
                 }
