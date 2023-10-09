@@ -55,7 +55,7 @@ addLayer("a",{
                 return hasAchievement(this.layer, this.id) ? "" : {
                   backgroundImage: ""
                 }
-              },  
+              },
             image: "https://th.bing.com/th/id/OIP.JwrL266NzPtHWrCn4dxmAwHaIN?w=179&h=199&c=7&r=0&o=5&pid=1.7"
         },
         15:{
@@ -154,10 +154,10 @@ addLayer("cr",{
                 return status
             }
         },
-    }, 
+    },
     tabFormat: {
      "Point Boost Upgrades": {
-        content:[ 
+        content:[
             ["display-text",
             function() {return `<h2 style=color:#FFD700;><b>You have ` + format(player.cr.points) + ` Creation points.</b>`},],
             ["display-text",
@@ -179,13 +179,13 @@ addLayer("cr",{
             ["display-text",
             function() {return '<h3><b> Note: Creation Upgrades are meant to be slow. <b></h3>'}],
             ["display-text",
-            function() {return '<h3><b> * = A list can be found here --> <b><a href="currency-list.html" target="_blank" style=color:white;>Currency List</a></h3>'}]
+            function() {return '<h3><b> * = A list can be found here --> <b><a href="the-periodic-tree-master/js/currency-list.html" target="_blank" style=color:white;>Currency List</a></h3>'}]
             ]},
     "Feature Upgrades" : {
         content:[
             ["display-text",
             function() {return `<h2 style=color:#FFD700;><b>This is for testing purposes.<br>Nothing yet to see here :)</b>`},],
-            ["upgrade", "14"],
+            ["upgrade", "11", "12"],
         ],
         unlocked(){
             return (tmp.cr.bars.progBar.progress.neq(player.cr.total.div(1500)))
@@ -209,6 +209,7 @@ addLayer("cr",{
         if(hasUpgrade("cr", 12)) generation = new Decimal(1)
         if(hasUpgrade("cr", 13)) generation = new Decimal(5)
         if(hasUpgrade("cr", 14)) generation = new Decimal(15)
+        if(hasUpgrade("he", 13)) generation = generation.times(tmp.he.effect.times(2))
         if(hasUpgrade("cr", 21)) generation = generation.times(upgradeEffect("cr", 21))
 
         return !hasUpgrade("cr", 13) ? generation : generation.pow(tmp.cr.effect)
@@ -232,12 +233,12 @@ addLayer("cr",{
             unlocked(){
                 return hasUpgrade("cr", "14")
              },
-            body() { return `In the beginning, all was simple - there were 4 elements: Earth, 
-            Fire, Water, and Air. All was in peace and harmony... until the fire nation attacked. 
-            Anyways, in the beginning, there was creation. I do 
-            not care what you believe in, or what religion you are, but all of 
-            them have a starting point of the world being created. In this case, 
-            The Big Bang will be what we will refer to since most people accept 
+            body() { return `In the beginning, all was simple - there were 4 elements: Earth,
+            Fire, Water, and Air. All was in peace and harmony... until the fire nation attacked.
+            Anyways, in the beginning, there was creation. I do
+            not care what you believe in, or what religion you are, but all of
+            them have a starting point of the world being created. In this case,
+            The Big Bang will be what we will refer to since most people accept
             that as a possible source of creation. The Big Bang was said to have happened around
              13.8 billion years ago. Good Luck! Have fun with the time walls!`},
        },
@@ -289,7 +290,7 @@ addLayer("cr",{
                 return hasAchievement("a", 13)
             },
             effect(){
-                let effect = ((player.cr.points.log10()).div(100)).pow(0.4)
+                let effect = ((player.cr.points.log10()).div(1000)).pow(0.5)
                 return effect
             },
             effectDisplay() { return '+' + format(upgradeEffect(this.layer, this.id))},
@@ -297,7 +298,7 @@ addLayer("cr",{
         31:{
             title: "ur mom",
             description: "joe mama",
-            cost: new Decimal(1e12),
+            cost: new Decimal(1e1000),
             unlocked(){
                 let status = false
                 if(tmp.cr.bars.progBar.progress.gte(1) || hasUpgrade("cr", 31) || tmp.cr.bars.progBar.progress.neq(player.cr.points.div(1.38e30))) status = true
@@ -339,10 +340,11 @@ addLayer("h", {
         let exp = new Decimal(1)
         return exp;
     },
-    directMult(f){ //Directly multiplies the resource gain of that layer
+    directMult(){ //Directly multiplies the resource gain of that layer
         let multiplier = new Decimal(1);
         if(hasUpgrade('h', 21)) multiplier = multiplier.times(upgradeEffect('h', 21))
         if(hasUpgrade('he', 11)) multiplier = multiplier.times(3);
+        if(hasUpgrade('he', 22)) multiplier = multiplier.times(upgradeEffect('he', 22))
         if(hasUpgrade('l', 11)) multiplier = multiplier.times(upgradeEffect('l', 11));
         return multiplier = multiplier.pow(tmp.cr.effect)
     },
@@ -353,7 +355,7 @@ addLayer("h", {
         let show = false
         if (hasUpgrade("cr", "14")) show = true
         return show
-    },	
+    },
     doReset(resettingLayer) {
         let keep = [];
         if (hasMilestone("he", 0) && resettingLayer=="he") keep.push("upgrades")
@@ -380,9 +382,9 @@ addLayer("h", {
     infoboxes: {
         lore2: {
             title: "Lore",
-            body() { return `Ah! Now that you have broken the timewall, you unlocked hydrogen 
-            which is the first element in your marvelous elemental journey! 
-            Hydrogen is a very important element. It is one of the elements that 
+            body() { return `Ah! Now that you have broken the timewall, you unlocked hydrogen
+            which is the first element in your marvelous elemental journey!
+            Hydrogen is a very important element. It is one of the elements that
             creates water along with oxygen! Therefore, you must accumulate as much hydrogen as
              you can to go on to the next layer! Good luck!`},
        },
@@ -473,30 +475,35 @@ startData() {return{
     unlocked: false,
     points: new Decimal(0),
     total:new Decimal(0),
-    best: new Decimal(0)
+    best: new Decimal(0),
+    effectBest: new Decimal(1)
 }},
 
     color: "#0BE0CE",
     requires(){
-        return new Decimal(600).times(4)
+        let exponent = player.he.points.times(2).add(2.00)
+        if(player.he.points.gte(8)) exponent = player.he.points.times(0.01).add(1.85)
+        return !player.he.points.gte(8) ? new Decimal(600).times(exponent) : new Decimal(500).pow(exponent)
         },
     resource: "helium",
     baseResource: "atoms",
     baseAmount() {return player.points},
     type: "static",
 	branches:["h"],
-    exponent: 1,    
+    exponent: 1,
     effect(){
         let effect = new Decimal(2).pow(player.he.points)
         if(hasUpgrade('cr',22)) effect = (new Decimal(2).add(upgradeEffect("cr", 22))).pow(player.he.points)
 	    if(hasUpgrade('he', 21)) effect = effect.pow(1.1);
+        if(effect.gt(player.he.effectBest)) player.he.effectBest = effect
+        if(hasMilestone('he', 3) && effect.lt(player.he.effectBest)) effect = player.he.effectBest
         return effect
     },
     effectDescription() { return "Helium gives a " + format(tmp.he.effect) + "x bonus towards atoms"},
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
-    },    
+    },
     canBuyMax() { return hasMilestone("he", 1) },
     gainExp() { // Calculate the exponent on main currency from bonuses
         exp = new Decimal(1)
@@ -517,10 +524,15 @@ startData() {return{
 				effectDescription: "Keep Hydrogen Upgrades on reset.",
 			},
 			1: {
-				requirementDescription: "15 Helium",
-				done() { return player.he.best.gte(15)},
-				effectDescription: "You can buy max Helium.",
+				requirementDescription: "12 Helium",
+				done() { return player.he.best.gte(12)},
+				effectDescription: "Unlock more helium upgrades",
 			},
+            2: {
+                requirementDescription: "20 Helium",
+                done() {return player.he.best.gte(20)},
+                effectDescription: "Best helium bonus is kept on higher resets"
+            }
 		},
     upgrades: {
         11:{
@@ -532,26 +544,30 @@ startData() {return{
         12:{
             title: "Helium Bonds",
             description: 'Helium boosts the effects of the <b>Synergetic Hydrogen</b> upgrade!',
-            cost: new Decimal(4),
+            cost: new Decimal(3),
             unlocked() { return hasUpgrade("he", 11) },
         },
         13:{
             title: "Synergetic Helium",
-            description: "Beset helium boosts atoms",
-            cost: new Decimal(7),
+            description: "Helium boosts creation point generation. CR Generation * (Effect*2) ",
+            cost: new Decimal(5),
             unlocked() { return hasUpgrade("he", 12) },
-            effect() {
-                let effect = player.l.best.add(1).pow(0.4)
-                return effect
-            },
-            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
         },
         21:{
             title: "Helium Bonus I",
             description: "Increases helium bonus",
-            cost: new Decimal(5),
+            cost: new Decimal(8),
             unlocked() { return hasUpgrade("he", 12) },
         },
+        22:{
+            title:"More bonuses",
+            description: 'Helium bonus effects hydrogen gain by its square root.',
+            cost: new Decimal(12),
+            unlocked(){return hasAchievement('a', 15) && hasUpgrade("h", 23)},
+            effect(){
+                return tmp.he.effect.pow(0.5)
+            }   
+        }
     }
 })
 addLayer("l", {
@@ -576,9 +592,9 @@ addLayer("l", {
 
     color: "green",
     requires(){
-        let exponent = player.l.points.add(1)
+        let exponent = player.l.points.times(0.05).add(1.1)
         let cost = new Decimal(1000000000)
-        if(player.l.unlocked) cost = (new Decimal(3).pow(exponent)).times(1000)
+        if(player.l.unlocked) cost = new Decimal(1000000000).pow(exponent)
         return cost
         },
     resource: "lithium",
@@ -586,7 +602,7 @@ addLayer("l", {
     baseAmount() {return player.points},
     type: "static",
     branches: ["h", "he"],
-    exponent: 1, 
+    exponent: 1,
     update(diff) {
         if (player.l.unlocked) player.l.charge = player.l.charge.add(tmp.l.effect.times(diff));
     },
@@ -604,7 +620,7 @@ addLayer("l", {
     },
     chargeEff() {
         if (!player.l.unlocked) return new Decimal(1);
-        return new Decimal(player.l.charge).root(3).add(1).pow(this.chargeExp());
+        return new Decimal(player.l.charge).root(2.5).add(1).pow(this.chargeExp());
     },
     effectDescription() { return " which generates " + format(tmp.l.effect) + " charge a second"},
 
@@ -657,10 +673,10 @@ addLayer("l", {
     upgrades:{
         11: {
             title: "Charged Up",
-            description: "Best Hydrogen gain boosts hydrogen gain",
+            description: "Total Hydrogen gain boosts hydrogen gain",
             cost: new Decimal(1),
             effect(){
-                let effect = player.h.best.log10().add(1)
+                let effect = player.h.best.log(10).div(10).add(1)
                 if(player.h.points.lte(1)) effect = 1
                 return effect
             },
@@ -670,14 +686,13 @@ addLayer("l", {
         12: {
             title: "Power",
             description: "Best lithium adds to the base charge gain.",
-            cost: new Decimal(4),
+            cost: new Decimal(3),
             effect() {
                 let effect = player.l.best.pow(0.3).sub(1)
                 return effect
             },
             effectDisplay() { return '+'+ format(upgradeEffect(this.layer, this.id)) },
 
-            unlocked(){return hasUpgrade("l", 11)}
             },
         13:{
             title: "Chez",
