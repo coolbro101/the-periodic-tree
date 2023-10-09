@@ -3,7 +3,7 @@ let modInfo = {
 	id: "mymod",
 	author: "amogus22, King-B3H, FebruaryTheDuck",
 	pointsName: "atoms",
-	modFiles: ["layers.js", "tree.js"],
+	modFiles: ["layers.js", "tree.js", "currency-list.html"],
 
 	discordName: "The Periodic Tree Discord",
 	discordLink: "https://discord.gg/GTYKWmcq",
