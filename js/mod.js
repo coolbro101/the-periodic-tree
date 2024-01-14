@@ -3,7 +3,7 @@ let modInfo = {
 	id: "mymod",
 	author: "amogus22, King-B3H, FebruaryTheDuck",
 	pointsName: "atoms",
-	modFiles: ["layers.js", "tree.js"],
+	modFiles: ["layers.js", "tree.js", "currency-list.html"],
 
 	discordName: "The Periodic Tree Discord",
 	discordLink: "https://discord.gg/GTYKWmcq",
@@ -13,14 +13,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Literally nothing",
+	num: "0.1",
+	name: "Small Beginnings",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+	<h3>v0.1</h3><br>
+		- Added Creation, Hydrogen, Helium, and Lithium.<br>
+		- Beryllium is meant for WIP and a setup for next update.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -48,8 +48,16 @@ function getPointGen() {
 		if(hasUpgrade('h', 12)) gain = gain.times(2)
 		if(hasUpgrade('h', 13)) gain = gain.times(upgradeEffect('h',13))
 		if(hasUpgrade('h', 21)) gain = gain.times(upgradeEffect('h',21))
-		if(hasUpgrade('h', 22)) gain = gain.times(3)
+		if(hasUpgrade('h', 22)) gain = gain.times(2)
 		if(hasUpgrade('h', 23)) gain = gain.times(upgradeEffect('h',23))
+		//Helium
+		if(player.he.unlocked && tmp.he.effect.gt(0)){
+			gain = gain.times(tmp.he.effect)
+		}
+		//Lithium
+		if(player.l.unlocked && player.l.charge.gt(0)){
+			gain = gain.times(tmp.l.chargeEff)
+		}
 	return gain
 }
 
